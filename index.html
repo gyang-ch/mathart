@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mathematical Art Experiment</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+</head>
+
+<body>
+  <div class="grain"></div>
+  <div class="frame-lines"></div>
+  <div id="transition-glow"></div>
+
+  <div id="canvas-container"></div>
+
+  <!-- Top-right text card -->
+  <div id="info-panel">
+    <div id="caption"></div>
+  </div>
+
+  <!-- Left-side section navigator -->
+  <nav id="progress-nav" class="integrated-nav" aria-label="Artwork sections">
+    <div class="nav-track" aria-hidden="true">
+      <div class="nav-indicator"></div>
+    </div>
+    <ul class="nav-labels">
+      <li>
+        <a href="#s1" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">1. Resonator</div>
+        </a>
+      </li>
+      <li>
+        <a href="#s2" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">2. Morphogenesis</div>
+        </a>
+      </li>
+      <li>
+        <a href="#s3" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">3. Fractal</div>
+        </a>
+      </li>
+      <li>
+        <a href="#s4" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">4. Rose</div>
+        </a>
+      </li>
+      <li>
+        <a href="#s5" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">5. Dupin</div>
+        </a>
+      </li>
+      <li>
+        <a href="#s6" class="glow-nav-btn">
+          <div class="glow-bg"></div>
+          <div class="glow-btn-content">6. Resonator New</div>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- front page -->
+  <section class="active" id="intro">
+    <div class="panel intro-panel">
+      <h1 id="intro-title">Mathematical Art<br>Experiment</h1>
+      <p class="artist-credit">Guang Yang</p>
+      <div class="tech-note"><span class="down-arrows" aria-hidden="true">↓</span> Scroll to initialise <span class="down-arrows" aria-hidden="true">↓</span></div>
+    </div>
+  </section>
+
+  <!-- Scroll sections: each data-mode maps to one artwork in main.js -->
+  <section id="s1" data-mode="1" data-label="1. Resonator" data-meta="3D harmonic lines • amplitude + click-invert reactive"></section>
+  <section id="s2" data-mode="2" data-label="2. Morphogenesis" data-meta="GLSL ray-marched surface • mouse rotates, click cycles palette"></section>
+  <section id="s3" data-mode="3" data-label="3. Fractal" data-meta="Recursive 3D fractal • luminous depth lattice"></section>
+  <section id="s4" data-mode="4" data-label="4. Rose" data-meta="Polar geometry • mouse mapped"></section>
+  <section id="s5" data-mode="5" data-label="5. Dupin" data-meta="3D Cyclide surface • X morphs shape, Y tilts"></section>
+  <section id="s6" data-mode="6" data-label="6. Resonator New" data-meta="Morphogenetic line field • palette-shifted resonant geometry"></section>
+
+  <!-- Artwork-specific control panels-->
+  <aside id="resonator-controls" aria-label="Resonator controls">
+    <h3>Resonator Control Surface</h3>
+    <div class="resonator-control-row">
+      <p class="resonator-control-note">All edits apply immediately to the live equation.</p>
+    </div>
+    <div class="resonator-button-grid">
+      <div class="btn-glow-wrapper">
+        <div class="btn-glow"></div>
+        <button id="change-resonator-curve" type="button" class="resonator-curve-btn relative-btn">Change Curve</button>
+      </div>
+      <div class="btn-glow-wrapper">
+        <div class="btn-glow"></div>
+        <button id="invert-resonator-rotation" type="button" class="resonator-curve-btn relative-btn">Invert Spin</button>
+      </div>
+      <div class="btn-glow-wrapper">
+        <div class="btn-glow"></div>
+        <button id="reset-resonator-controls" type="button" class="resonator-curve-btn relative-btn">Reset</button>
+      </div>
+      <div class="btn-glow-wrapper">
+        <div class="btn-glow"></div>
+        <button id="save-resonator-screenshot" type="button" class="resonator-curve-btn relative-btn">Save PNG</button>
+      </div>
+    </div>
+    <div class="resonator-control-row">
+      <p id="resonator-curve-name" class="resonator-curve-name">Harmonic Phase</p>
+    </div>
+
+    <details class="resonator-section-toggle" open>
+      <summary>Field + Colour</summary>
+      <div class="resonator-control-stack">
+        <label class="resonator-inline-control">
+          <span>Line count N</span>
+          <div class="resonator-input-pair">
+            <input data-resonator-key="numLines" type="range" min="40" max="1200" step="10" value="400" />
+            <input data-resonator-key="numLines" type="number" min="40" max="1200" step="10" value="400" />
+          </div>
+        </label>
+        <label class="resonator-inline-control">
+          <span>Primary hue h₀</span>
+          <div class="resonator-input-pair">
+            <input id="resonator-hue" data-resonator-key="primaryHue" type="range" min="0" max="360" step="1" value="118" />
+            <input data-resonator-key="primaryHue" type="number" min="0" max="360" step="1" value="118" />
+          </div>
+        </label>
+        <label class="resonator-inline-control">
+          <span>Hue offset Δh</span>
+          <div class="resonator-input-pair">
+            <input data-resonator-key="hueOffset" type="range" min="0" max="360" step="1" value="132" />
+            <input data-resonator-key="hueOffset" type="number" min="0" max="360" step="1" value="132" />
+          </div>
+        </label>
+        <div class="resonator-grid-3">
+          <label class="resonator-inline-control">
+            <span>S</span>
+            <input data-resonator-key="saturation" type="number" min="0" max="100" step="1" value="90" />
+          </label>
+          <label class="resonator-inline-control">
+            <span>B</span>
+            <input data-resonator-key="brightness" type="number" min="0" max="100" step="1" value="100" />
+          </label>
+          <label class="resonator-inline-control">
+            <span>|ω|</span>
+            <input data-resonator-key="rotationSpeedScale" type="number" min="0" max="6" step="0.05" value="1" />
+          </label>
+        </div>
+      </div>
+    </details>
+
+    <details class="resonator-section-toggle" open>
+      <summary>Harmonic Phase</summary>
+      <div class="resonator-formula-card">
+        <p class="resonator-formula">θ = 2πpf + t</p>
+        <p class="resonator-formula">φ = 2πp + 0.5t</p>
+        <p class="resonator-formula">x = R sin(θ) cos(kφ), y = R cos(mθ) sin(φ)</p>
+      </div>
+      <div class="resonator-grid-2">
+        <label class="resonator-inline-control">
+          <span>f</span>
+          <input data-resonator-key="harmonicFreq" type="number" min="0.25" max="16" step="0.05" value="4" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>k</span>
+          <input data-resonator-key="harmonicPhiMultiplier" type="number" min="0.1" max="8" step="0.05" value="2" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>m</span>
+          <input data-resonator-key="harmonicThetaMultiplier" type="number" min="0.1" max="8" step="0.05" value="1.5" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R scale</span>
+          <input data-resonator-key="harmonicRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.35" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>Δt</span>
+          <input data-resonator-key="harmonicTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.05" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>w</span>
+          <input data-resonator-key="harmonicStrokeWeight" type="number" min="0.1" max="6" step="0.1" value="1.5" />
+        </label>
+      </div>
+    </details>
+
+    <details class="resonator-section-toggle">
+      <summary>Hypotrochoidal Evolution</summary>
+      <div class="resonator-formula-card">
+        <p class="resonator-formula">x = (R-r) cos(t) + d cos(((R-r)/r)t)</p>
+        <p class="resonator-formula">y = (R-r) sin(t) - d sin(((R-r)/r)t)</p>
+      </div>
+      <div class="resonator-grid-3">
+        <label class="resonator-inline-control">
+          <span>θ scale</span>
+          <input data-resonator-key="hypoThetaMultiplier" type="number" min="1" max="32" step="0.5" value="12" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R₁</span>
+          <input data-resonator-key="hypoCurve1RScale" type="number" min="0.1" max="3" step="0.05" value="1" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>r₁</span>
+          <input data-resonator-key="hypoCurve1rScale" type="number" min="0.05" max="2" step="0.01" value="0.25" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>d₁</span>
+          <input data-resonator-key="hypoCurve1dScale" type="number" min="0" max="2" step="0.01" value="0.6" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R₂</span>
+          <input data-resonator-key="hypoCurve2RScale" type="number" min="0.1" max="3" step="0.05" value="1.4" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>r₂</span>
+          <input data-resonator-key="hypoCurve2rScale" type="number" min="0.05" max="2" step="0.01" value="0.4" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>d₂</span>
+          <input data-resonator-key="hypoCurve2dScale" type="number" min="0" max="2" step="0.01" value="0.9" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>Δt</span>
+          <input data-resonator-key="hypoTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.02" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R scale</span>
+          <input data-resonator-key="hypotrochoidRadiusScale" type="number" min="0.05" max="0.6" step="0.01" value="0.22" />
+        </label>
+      </div>
+    </details>
+
+    <details class="resonator-section-toggle">
+      <summary>Toroidal Knot</summary>
+      <div class="resonator-formula-card">
+        <p class="resonator-formula">u₁ = p₁θ + t, v₁ = q₁θ - λt</p>
+        <p class="resonator-formula">x = (R + r cos(v)) cos(u), y = (R + r cos(v)) sin(u)</p>
+      </div>
+      <div class="resonator-grid-3">
+        <label class="resonator-inline-control">
+          <span>p₁</span>
+          <input data-resonator-key="toroidalP1" type="number" min="1" max="12" step="1" value="3" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>q₁</span>
+          <input data-resonator-key="toroidalQ1" type="number" min="1" max="12" step="1" value="2" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>p₂</span>
+          <input data-resonator-key="toroidalP2" type="number" min="1" max="12" step="1" value="5" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>q₂</span>
+          <input data-resonator-key="toroidalQ2" type="number" min="1" max="12" step="1" value="4" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R</span>
+          <input data-resonator-key="toroidalMajorRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.25" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>r</span>
+          <input data-resonator-key="toroidalMinorRadiusScale" type="number" min="0.02" max="0.4" step="0.01" value="0.12" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>R₂ / R</span>
+          <input data-resonator-key="toroidalMajor2Scale" type="number" min="0.1" max="3" step="0.05" value="1.3" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>r₂ / r</span>
+          <input data-resonator-key="toroidalMinor2Scale" type="number" min="0.1" max="3" step="0.05" value="0.8" />
+        </label>
+        <label class="resonator-inline-control">
+          <span>Δt</span>
+          <input data-resonator-key="toroidalTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.015" />
+        </label>
+      </div>
+    </details>
+  </aside>
+
+  <aside id="fractal-controls" aria-label="Fractal controls">
+    <h3>Controls</h3>
+    <div class="fractal-control-row">
+      <div class="fractal-control-meta">
+        <label for="fractal-depth">Fractal Depth</label>
+        <span id="fractal-depth-value">3</span>
+      </div>
+      <input id="fractal-depth" type="range" min="0" max="5" step="1" value="3" />
+    </div>
+    <div class="fractal-control-row">
+      <div class="fractal-control-meta">
+        <label for="fractal-rot-x">Rotation X</label>
+        <span id="fractal-rot-x-value">0.010</span>
+      </div>
+      <input id="fractal-rot-x" type="range" min="0" max="0.05" step="0.001" value="0.01" />
+    </div>
+    <div class="fractal-control-row">
+      <div class="fractal-control-meta">
+        <label for="fractal-rot-y">Rotation Y</label>
+        <span id="fractal-rot-y-value">0.015</span>
+      </div>
+      <input id="fractal-rot-y" type="range" min="0" max="0.05" step="0.001" value="0.015" />
+    </div>
+    <div class="fractal-control-row">
+      <div class="fractal-control-meta">
+        <label for="fractal-hue">Base Hue</label>
+        <span id="fractal-hue-value">200</span>
+      </div>
+      <input id="fractal-hue" type="range" min="0" max="360" step="1" value="200" />
+    </div>
+    <div class="fractal-control-row">
+      <div class="fractal-control-meta">
+        <label for="fractal-gap">Cube Gap</label>
+        <span id="fractal-gap-value">1.00</span>
+      </div>
+      <input id="fractal-gap" type="range" min="1" max="2" step="0.05" value="1" />
+    </div>
+  </aside>
+
+  <aside id="rose-controls" aria-label="Rose controls">
+    <h3>Controls</h3>
+    <div class="rose-control-row">
+      <div class="rose-control-meta">
+        <label for="rose-cool-hue">Inner Hue</label>
+        <span id="rose-cool-hue-value">196</span>
+      </div>
+      <input id="rose-cool-hue" type="range" min="0" max="360" step="1" value="196" />
+    </div>
+    <div class="rose-control-row">
+      <div class="rose-control-meta">
+        <label for="rose-warm-hue">Outer Hue</label>
+        <span id="rose-warm-hue-value">338</span>
+      </div>
+      <input id="rose-warm-hue" type="range" min="0" max="360" step="1" value="338" />
+    </div>
+  </aside>
+
+  <aside id="dupin-controls" aria-label="Dupin controls">
+    <h3>Controls</h3>
+    <div class="dupin-control-row">
+      <div class="dupin-control-meta">
+        <label for="dupin-hue">Primary Hue</label>
+        <span id="dupin-hue-value">280</span>
+      </div>
+      <input id="dupin-hue" type="range" min="0" max="360" step="1" value="280" />
+    </div>
+  </aside>
+
+  <aside id="resonator-new-controls" aria-label="Resonator New controls">
+    <h3>Controls</h3>
+    <div class="resonator-control-row">
+      <div class="btn-glow-wrapper">
+        <div class="btn-glow"></div>
+        <button id="change-resonator-new-curve" type="button" class="resonator-curve-btn relative-btn">Change Curve</button>
+      </div>
+      <p id="resonator-new-curve-name" class="resonator-curve-name">Harmonic Phase</p>
+    </div>
+    <div class="resonator-control-row">
+      <div class="btn-glow-wrapper" style="width: 100%;">
+        <div class="btn-glow"></div>
+        <button id="cycle-resonator-new-palette" type="button" class="resonator-curve-btn relative-btn" style="width: 100%;">Cycle Palette</button>
+      </div>
+    </div>
+    <div class="resonator-control-row">
+      <div class="btn-glow-wrapper" style="width: 100%;">
+        <div class="btn-glow"></div>
+        <button id="save-resonator-new-screenshot" type="button" class="resonator-curve-btn relative-btn" style="width: 100%;">Save Screenshot</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Load JavaScript files -->
+  <script src="artworks/resonator.js"></script>
+  <script src="artworks/morphogenesis.js"></script>
+  <script src="artworks/fractal.js"></script>
+  <script src="artworks/rose.js"></script>
+  <script src="artworks/dupin.js"></script>
+  <script src="artworks/resonator-new.js"></script>
+  <script src="main.js"></script>
+  <script src="gsap-controller.js"></script>
+
+</body>
+</html>
