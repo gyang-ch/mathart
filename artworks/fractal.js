@@ -18,22 +18,18 @@ let rotXInput = null;
 let rotYInput = null;
 let hueInput = null;
 let gapInput = null;
-let depthValue = null;
-let rotXValue = null;
-let rotYValue = null;
-let hueValue = null;
-let gapValue = null;
 
 function clampFractalNumber(value, minValue, maxValue) {
   return min(max(Number(value) || 0, minValue), maxValue);
 }
 
 function syncFractalLabels() {
-  if (depthValue) depthValue.textContent = String(fractalSettings.depth);
-  if (rotXValue) rotXValue.textContent = Number(fractalSettings.rotXSpeed).toFixed(3);
-  if (rotYValue) rotYValue.textContent = Number(fractalSettings.rotYSpeed).toFixed(3);
-  if (hueValue) hueValue.textContent = String(floor(fractalSettings.baseHue));
-  if (gapValue) gapValue.textContent = Number(fractalSettings.gap).toFixed(2);
+  if (!window.updateScrubberDisplay) return;
+  [depthInput, rotXInput, rotYInput, hueInput, gapInput].forEach((input) => {
+    if (!input) return;
+    const scrubber = input.closest(".res-scrubber");
+    if (scrubber) window.updateScrubberDisplay(scrubber);
+  });
 }
 
 function applyFractalControls() {
@@ -55,11 +51,6 @@ function bindFractalControls() {
   rotYInput = document.getElementById("fractal-rot-y");
   hueInput = document.getElementById("fractal-hue");
   gapInput = document.getElementById("fractal-gap");
-  depthValue = document.getElementById("fractal-depth-value");
-  rotXValue = document.getElementById("fractal-rot-x-value");
-  rotYValue = document.getElementById("fractal-rot-y-value");
-  hueValue = document.getElementById("fractal-hue-value");
-  gapValue = document.getElementById("fractal-gap-value");
 
   const inputs = [depthInput, rotXInput, rotYInput, hueInput, gapInput];
   if (inputs.some((input) => !input)) return;

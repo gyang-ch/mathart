@@ -36,7 +36,6 @@ function windowResized() {
   if (mode === 2) initMorphogenesis();
   if (mode === 3) initFractal();
   if (mode === 5) initDupin();
-  if (mode === 6) initResonatorNew();
 }
 
 // p5 draw(): render exactly one active artwork each frame.
@@ -53,8 +52,6 @@ function draw() {
     drawMaurerRose();
   } else if (mode === 5) {
     drawDupin();
-  } else if (mode === 6) {
-    drawResonatorNew();
   }
 
   drawTransitionOverlay();
@@ -118,12 +115,6 @@ function changeMode(newMode) {
   } else if (mode === 5) {
     initDupin();
     setCaption("5. Dupin.", "<b>Interact:</b> Move mouse X to morph shape, Y to tilt.");
-  } else if (mode === 6) {
-    initResonatorNew();
-    setCaption(
-      "6. Resonator New.",
-      "<b>Interact:</b> Mouse distance modulates amplitude; click inverts rotation, use controls to shift curve and palette."
-    );
   }
 }
 
@@ -153,14 +144,12 @@ function setCaption(title, desc) {
 
 // Shared click interactions for artworks that react to clicks.
 function mousePressed(event) {
-  if (event && event.target && event.target.closest("#rose-controls, #fractal-controls, #resonator-controls, #resonator-new-controls, .regenerate-btn")) {
+  if (event && event.target && event.target.closest("#rose-controls, #fractal-controls, #resonator-controls, .regenerate-btn")) {
     return;
   } else if (mode === 1) {
     invertResonatorRotation();
   } else if (mode === 2) {
     cycleMorphoPalette();
-  } else if (mode === 6) {
-    invertResonatorNewRotation();
   }
 }
 
@@ -170,14 +159,10 @@ function keyPressed() {
     if (mode === 1) {
       const btn = document.getElementById('save-resonator-screenshot');
       if (btn) btn.click();
-    } else if (mode === 6) {
-      const btn = document.getElementById('save-resonator-new-screenshot');
-      if (btn) btn.click();
     }
   }
   if (key === 'p' || key === 'P') {
     if (mode === 2) cycleMorphoPalette();
-    if (mode === 6) cycleResonatorNewPalette();
   }
   return true;
 }

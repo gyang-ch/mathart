@@ -13,7 +13,6 @@ const roseControls = document.getElementById("rose-controls");
 const dupinControls = document.getElementById("dupin-controls");
 const fractalControls = document.getElementById("fractal-controls");
 const resonatorControls = document.getElementById("resonator-controls");
-const resonatorNewControls = document.getElementById("resonator-new-controls");
 const invertResonatorRotationBtn = document.getElementById("invert-resonator-rotation");
 const resetResonatorControlsBtn = document.getElementById("reset-resonator-controls");
 const saveResonatorScreenshotBtn = document.getElementById("save-resonator-screenshot");
@@ -27,16 +26,9 @@ const resonatorHueInput = document.getElementById("resonator-hue");
 const resonatorConfigInputs = resonatorControls
   ? Array.from(resonatorControls.querySelectorAll("[data-resonator-key]"))
   : [];
-const changeResonatorNewCurveBtn = document.getElementById("change-resonator-new-curve");
-const cycleResonatorNewPaletteBtn = document.getElementById("cycle-resonator-new-palette");
-const saveResonatorNewScreenshotBtn = document.getElementById("save-resonator-new-screenshot");
-const resonatorNewCurveName = document.getElementById("resonator-new-curve-name");
 const roseCoolHueInput = document.getElementById("rose-cool-hue");
 const roseWarmHueInput = document.getElementById("rose-warm-hue");
 const dupinHueInput = document.getElementById("dupin-hue");
-const roseCoolHueValue = document.getElementById("rose-cool-hue-value");
-const roseWarmHueValue = document.getElementById("rose-warm-hue-value");
-const dupinHueValue = document.getElementById("dupin-hue-value");
 const introSection = document.getElementById("intro");
 const introTitle = document.getElementById("intro-title");
 const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -424,13 +416,11 @@ function runModeTransitionFx() {
 }
 
 function syncRoseControlLabels() {
-  if (!roseCoolHueInput || !roseWarmHueInput) return;
-  if (roseCoolHueValue) {
-    roseCoolHueValue.textContent = roseCoolHueInput.value;
-  }
-  if (roseWarmHueValue) {
-    roseWarmHueValue.textContent = roseWarmHueInput.value;
-  }
+  [roseCoolHueInput, roseWarmHueInput].forEach((input) => {
+    if (!input) return;
+    const scrubber = input.closest(".res-scrubber");
+    if (scrubber) updateScrubberDisplay(scrubber);
+  });
 }
 
 function applyRoseControlValues() {
@@ -443,8 +433,9 @@ function applyRoseControlValues() {
 }
 
 function syncDupinHueLabel() {
-  if (!dupinHueInput || !dupinHueValue) return;
-  dupinHueValue.textContent = dupinHueInput.value;
+  if (!dupinHueInput) return;
+  const scrubber = dupinHueInput.closest(".res-scrubber");
+  if (scrubber) updateScrubberDisplay(scrubber);
 }
 
 function applyDupinHueValue() {
@@ -467,23 +458,123 @@ function showResonatorCurveSection(index, animate) {
   resonatorCurveSections.forEach((section) => {
     gsap.killTweensOf(section);
     if (Number(section.dataset.curveSection) === index) {
-      section.open = true;
       if (animate) {
         gsap.set(section, { display: "block" });
-        gsap.fromTo(section, { opacity: 0, y: 7 }, { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" });
+        const scrubbers = section.querySelectorAll(".res-scrubber");
+        gsap.fromTo(section, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power2.out" });
+        if (scrubbers.length) {
+          gsap.fromTo(scrubbers,
+            { opacity: 0, y: 5 },
+            { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", stagger: 0.025, delay: 0.06 }
+          );
+        }
       } else {
         gsap.set(section, { display: "block", opacity: 1, y: 0 });
       }
     } else {
-      if (animate) {
-        gsap.to(section, {
-          opacity: 0, duration: 0.16, ease: "power2.in",
-          onComplete: () => gsap.set(section, { display: "none", y: 0 })
-        });
-      } else {
-        gsap.set(section, { display: "none", opacity: 0 });
+      gsap.set(section, { display: "none", opacity: 0 });
+    }
+  });
+}
+
+function updateScrubberDisplay(scrubberEl) {
+  const fill = scrubberEl.querySelector(".res-scrubber-fill");
+  const valueEl = scrubberEl.querySelector(".res-scrubber-value");
+  const input = scrubberEl.querySelector(".res-scrubber-input");
+  if (!fill || !valueEl || !input) return;
+  const min = parseFloat(scrubberEl.dataset.min ?? 0);
+  const max = parseFloat(scrubberEl.dataset.max ?? 1);
+  const step = parseFloat(scrubberEl.dataset.step ?? 1);
+  const val = parseFloat(input.value);
+  if (!Number.isFinite(val)) return;
+  fill.style.width = Math.max(0, Math.min(100, (val - min) / (max - min) * 100)) + "%";
+  const dec = (String(step).split(".")[1] || "").length;
+  valueEl.textContent = dec > 0 ? val.toFixed(Math.min(dec, 3)) : String(Math.round(val));
+}
+
+window.updateScrubberDisplay = updateScrubberDisplay;
+
+function initScrubbers(container) {
+  if (!container) return;
+  const scrubbers = Array.from(container.querySelectorAll(".res-scrubber"));
+  scrubbers.forEach((scrubber) => {
+    const input = scrubber.querySelector(".res-scrubber-input");
+    if (!input) return;
+
+    updateScrubberDisplay(scrubber);
+
+    const min = parseFloat(scrubber.dataset.min ?? 0);
+    const max = parseFloat(scrubber.dataset.max ?? 1);
+    const step = parseFloat(scrubber.dataset.step ?? 1);
+
+    function snapValue(raw) {
+      const clamped = Math.max(min, Math.min(max, raw));
+      const snapped = Math.round(clamped / step) * step;
+      return parseFloat(snapped.toFixed(10));
+    }
+
+    function applyValue(newVal) {
+      const snapped = snapValue(newVal);
+      const asStr = String(snapped);
+      if (input.value === asStr) return;
+      input.value = asStr;
+      updateScrubberDisplay(scrubber);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartVal = 0;
+
+    scrubber.addEventListener("pointerdown", (e) => {
+      if (scrubber.classList.contains("editing")) return;
+      e.preventDefault();
+      const rect = scrubber.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      applyValue(min + pct * (max - min));
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartVal = parseFloat(input.value) || min;
+      scrubber.setPointerCapture(e.pointerId);
+      scrubber.classList.add("dragging");
+    });
+
+    scrubber.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const rect = scrubber.getBoundingClientRect();
+      const sensitivity = (max - min) / Math.max(rect.width, 40);
+      applyValue(dragStartVal + (e.clientX - dragStartX) * sensitivity);
+    });
+
+    scrubber.addEventListener("pointerup", () => {
+      if (!isDragging) return;
+      isDragging = false;
+      scrubber.classList.remove("dragging");
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    scrubber.addEventListener("dblclick", () => {
+      scrubber.classList.add("editing");
+      input.style.display = "block";
+      input.focus();
+      input.select();
+    });
+
+    function exitEdit() {
+      scrubber.classList.remove("editing");
+      input.style.display = "";
+      const parsed = parseFloat(input.value);
+      if (Number.isFinite(parsed)) {
+        input.value = String(snapValue(parsed));
+        updateScrubberDisplay(scrubber);
       }
     }
+
+    input.addEventListener("blur", exitEdit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { exitEdit(); input.dispatchEvent(new Event("change", { bubbles: true })); }
+      if (e.key === "Escape") { exitEdit(); }
+    });
   });
 }
 
@@ -501,6 +592,8 @@ function syncResonatorConfigControls() {
     if (document.activeElement === input) return;
     if (input.value !== nextValue) {
       input.value = nextValue;
+      const scrubber = input.closest(".res-scrubber");
+      if (scrubber) updateScrubberDisplay(scrubber);
     }
   });
 }
@@ -526,11 +619,6 @@ function applyResonatorConfigValue(input) {
   });
 }
 
-function syncResonatorNewCurveLabel() {
-  if (!resonatorNewCurveName) return;
-  if (!window.getResonatorNewCurveLabel) return;
-  resonatorNewCurveName.textContent = window.getResonatorNewCurveLabel();
-}
 
 function playButtonShine(btn, event) {
   if (!btn || !event) return;
@@ -643,12 +731,6 @@ function activateSection(section, options = {}) {
   }
   if (dupinControls) {
     dupinControls.classList.toggle("visible", section.id === "s5");
-  }
-  if (resonatorNewControls) {
-    resonatorNewControls.classList.toggle("visible", section.id === "s6");
-    if (section.id === "s6") {
-      syncResonatorNewCurveLabel();
-    }
   }
 }
 
@@ -809,7 +891,6 @@ if (introSection) {
       if (fractalControls) fractalControls.classList.remove("visible");
       if (resonatorControls) resonatorControls.classList.remove("visible");
       if (dupinControls) dupinControls.classList.remove("visible");
-      if (resonatorNewControls) resonatorNewControls.classList.remove("visible");
       if (activeMode !== 0) {
         changeMode(0);
         activeMode = 0;
@@ -827,7 +908,6 @@ if (introSection) {
       if (fractalControls) fractalControls.classList.remove("visible");
       if (resonatorControls) resonatorControls.classList.remove("visible");
       if (dupinControls) dupinControls.classList.remove("visible");
-      if (resonatorNewControls) resonatorNewControls.classList.remove("visible");
       if (activeMode !== 0) {
         changeMode(0);
         activeMode = 0;
@@ -890,8 +970,14 @@ setActiveNav("");
 setReachedDots(0);
 setupNavSheen();
 
+if (fractalControls) {
+  fractalControls.classList.remove("visible");
+  initScrubbers(fractalControls);
+}
+
 if (roseControls && roseCoolHueInput && roseWarmHueInput) {
   roseControls.classList.remove("visible");
+  initScrubbers(roseControls);
   if (window.getRosePalette) {
     const initial = window.getRosePalette();
     roseCoolHueInput.value = String(Math.round(initial.coolHue ?? 196));
@@ -909,6 +995,7 @@ if (roseControls && roseCoolHueInput && roseWarmHueInput) {
 
 if (resonatorControls) {
   resonatorControls.classList.remove("visible");
+  initScrubbers(resonatorControls);
   syncResonatorCurveSelection();
   syncResonatorConfigControls();
   const initialMode = window.getResonatorConfig ? (window.getResonatorConfig().curveMode ?? 0) : 0;
@@ -946,37 +1033,6 @@ if (resonatorControls && resetResonatorControlsBtn) {
   });
 }
 
-if (resonatorNewControls && changeResonatorNewCurveBtn) {
-  resonatorNewControls.classList.remove("visible");
-  syncResonatorNewCurveLabel();
-  changeResonatorNewCurveBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    playButtonShine(changeResonatorNewCurveBtn, event);
-    if (!window.cycleResonatorNewCurve) return;
-    window.cycleResonatorNewCurve();
-    syncResonatorNewCurveLabel();
-  });
-}
-
-if (resonatorNewControls && cycleResonatorNewPaletteBtn) {
-  cycleResonatorNewPaletteBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    playButtonShine(cycleResonatorNewPaletteBtn, event);
-    if (!window.cycleResonatorNewPalette) return;
-    window.cycleResonatorNewPalette();
-  });
-}
-
-if (resonatorNewControls && saveResonatorNewScreenshotBtn) {
-  saveResonatorNewScreenshotBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    playButtonShine(saveResonatorNewScreenshotBtn, event);
-    saveCanvas("resonator-new-moment", "png");
-  });
-}
 
 if (resonatorControls && saveResonatorScreenshotBtn) {
   saveResonatorScreenshotBtn.addEventListener("click", (event) => {
@@ -1001,6 +1057,8 @@ if (resonatorControls && resonatorConfigInputs.length) {
 }
 
 if (dupinControls && dupinHueInput) {
+  dupinControls.classList.remove("visible");
+  initScrubbers(dupinControls);
   if (window.getDupinHue) {
     dupinHueInput.value = String(Math.round(window.getDupinHue()));
   }

@@ -60,12 +60,6 @@
           <div class="glow-btn-content">5. Dupin</div>
         </a>
       </li>
-      <li>
-        <a href="#s6" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">6. Resonator New</div>
-        </a>
-      </li>
     </ul>
   </nav>
 
@@ -84,8 +78,6 @@
   <section id="s3" data-mode="3" data-label="3. Fractal" data-meta="Recursive 3D fractal • luminous depth lattice"></section>
   <section id="s4" data-mode="4" data-label="4. Rose" data-meta="Polar geometry • mouse mapped"></section>
   <section id="s5" data-mode="5" data-label="5. Dupin" data-meta="3D Cyclide surface • X morphs shape, Y tilts"></section>
-  <section id="s6" data-mode="6" data-label="6. Resonator New" data-meta="Morphogenetic line field • palette-shifted resonant geometry"></section>
-
   <!-- Artwork-specific control panels-->
   <aside id="resonator-controls" aria-label="Resonator controls">
     <h3>Resonator Control Surface</h3>
@@ -121,265 +113,288 @@
       </div>
     </div>
 
-    <details class="resonator-section-toggle" open>
-      <summary>Field + Colour</summary>
+    <div class="resonator-section-toggle">
+      <div class="resonator-section-header">Field + Colour</div>
       <div class="resonator-control-stack">
-        <label class="resonator-inline-control">
-          <span>Line count N</span>
-          <div class="resonator-input-pair">
-            <input data-resonator-key="numLines" type="range" min="40" max="1200" step="10" value="400" />
-            <input data-resonator-key="numLines" type="number" min="40" max="1200" step="10" value="400" />
-          </div>
-        </label>
-        <label class="resonator-inline-control">
-          <span>Primary hue h₀</span>
-          <div class="resonator-input-pair">
-            <input id="resonator-hue" data-resonator-key="primaryHue" type="range" min="0" max="360" step="1" value="118" />
-            <input data-resonator-key="primaryHue" type="number" min="0" max="360" step="1" value="118" />
-          </div>
-        </label>
-        <label class="resonator-inline-control">
-          <span>Hue offset Δh</span>
-          <div class="resonator-input-pair">
-            <input data-resonator-key="hueOffset" type="range" min="0" max="360" step="1" value="132" />
-            <input data-resonator-key="hueOffset" type="number" min="0" max="360" step="1" value="132" />
-          </div>
-        </label>
-        <label class="resonator-inline-control">
-          <span>Rotation speed</span>
-          <div class="resonator-input-pair">
-            <input data-resonator-key="rotationSpeedScale" type="range" min="0" max="6" step="0.05" value="0.5" />
-            <input data-resonator-key="rotationSpeedScale" type="number" min="0" max="6" step="0.05" value="0.5" />
-          </div>
-        </label>
+        <div class="res-scrubber" data-min="40" data-max="1200" data-step="10">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Line count N</span>
+          <span class="res-scrubber-value">400</span>
+          <input class="res-scrubber-input" data-resonator-key="numLines" type="number" min="40" max="1200" step="10" value="400" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Primary hue h₀</span>
+          <span class="res-scrubber-value">118</span>
+          <input id="resonator-hue" class="res-scrubber-input" data-resonator-key="primaryHue" type="number" min="0" max="360" step="1" value="118" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Hue offset Δh</span>
+          <span class="res-scrubber-value">132</span>
+          <input class="res-scrubber-input" data-resonator-key="hueOffset" type="number" min="0" max="360" step="1" value="132" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="6" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Rotation speed</span>
+          <span class="res-scrubber-value">0.50</span>
+          <input class="res-scrubber-input" data-resonator-key="rotationSpeedScale" type="number" min="0" max="6" step="0.05" value="0.5" />
+        </div>
         <div class="resonator-grid-2">
-          <label class="resonator-inline-control">
-            <span>S</span>
-            <input data-resonator-key="saturation" type="number" min="0" max="100" step="1" value="90" />
-          </label>
-          <label class="resonator-inline-control">
-            <span>B</span>
-            <input data-resonator-key="brightness" type="number" min="0" max="100" step="1" value="100" />
-          </label>
+          <div class="res-scrubber" data-min="0" data-max="100" data-step="1">
+            <div class="res-scrubber-fill"></div>
+            <span class="res-scrubber-label">S</span>
+            <span class="res-scrubber-value">90</span>
+            <input class="res-scrubber-input" data-resonator-key="saturation" type="number" min="0" max="100" step="1" value="90" />
+          </div>
+          <div class="res-scrubber" data-min="0" data-max="100" data-step="1">
+            <div class="res-scrubber-fill"></div>
+            <span class="res-scrubber-label">B</span>
+            <span class="res-scrubber-value">100</span>
+            <input class="res-scrubber-input" data-resonator-key="brightness" type="number" min="0" max="100" step="1" value="100" />
+          </div>
         </div>
       </div>
-    </details>
+    </div>
 
-    <details class="resonator-section-toggle" open data-curve-section="0">
-      <summary>Harmonic Phase</summary>
+    <div class="resonator-section-toggle" data-curve-section="0">
+      <div class="resonator-section-header">Harmonic Phase</div>
       <div class="resonator-formula-card">
         <p class="resonator-formula">θ = 2πpf + t</p>
         <p class="resonator-formula">φ = 2πp + 0.5t</p>
         <p class="resonator-formula">x = R sin(θ) cos(kφ), y = R cos(mθ) sin(φ)</p>
       </div>
       <div class="resonator-grid-2">
-        <label class="resonator-inline-control">
-          <span>f</span>
-          <input data-resonator-key="harmonicFreq" type="number" min="0.25" max="16" step="0.05" value="4" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>k</span>
-          <input data-resonator-key="harmonicPhiMultiplier" type="number" min="0.1" max="8" step="0.05" value="2" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>m</span>
-          <input data-resonator-key="harmonicThetaMultiplier" type="number" min="0.1" max="8" step="0.05" value="1.5" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R scale</span>
-          <input data-resonator-key="harmonicRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.35" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>Δt</span>
-          <input data-resonator-key="harmonicTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.05" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>w</span>
-          <input data-resonator-key="harmonicStrokeWeight" type="number" min="0.1" max="6" step="0.1" value="1.5" />
-        </label>
+        <div class="res-scrubber" data-min="0.25" data-max="16" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">f</span>
+          <span class="res-scrubber-value">4.00</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicFreq" type="number" min="0.25" max="16" step="0.05" value="4" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="8" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">k</span>
+          <span class="res-scrubber-value">2.00</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicPhiMultiplier" type="number" min="0.1" max="8" step="0.05" value="2" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="8" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">m</span>
+          <span class="res-scrubber-value">1.50</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicThetaMultiplier" type="number" min="0.1" max="8" step="0.05" value="1.5" />
+        </div>
+        <div class="res-scrubber" data-min="0.05" data-max="0.7" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R scale</span>
+          <span class="res-scrubber-value">0.35</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.35" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="0.2" data-step="0.001">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Δt</span>
+          <span class="res-scrubber-value">0.050</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.05" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="6" data-step="0.1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">w</span>
+          <span class="res-scrubber-value">1.5</span>
+          <input class="res-scrubber-input" data-resonator-key="harmonicStrokeWeight" type="number" min="0.1" max="6" step="0.1" value="1.5" />
+        </div>
       </div>
-    </details>
+    </div>
 
-    <details class="resonator-section-toggle" data-curve-section="1">
-      <summary>Hypotrochoidal Evolution</summary>
+    <div class="resonator-section-toggle" data-curve-section="1">
+      <div class="resonator-section-header">Hypotrochoidal Evolution</div>
       <div class="resonator-formula-card">
         <p class="resonator-formula">x = (R-r) cos(t) + d cos(((R-r)/r)t)</p>
         <p class="resonator-formula">y = (R-r) sin(t) - d sin(((R-r)/r)t)</p>
       </div>
       <div class="resonator-grid-3">
-        <label class="resonator-inline-control">
-          <span>θ scale</span>
-          <input data-resonator-key="hypoThetaMultiplier" type="number" min="1" max="32" step="0.5" value="12" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R₁</span>
-          <input data-resonator-key="hypoCurve1RScale" type="number" min="0.1" max="3" step="0.05" value="1" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>r₁</span>
-          <input data-resonator-key="hypoCurve1rScale" type="number" min="0.05" max="2" step="0.01" value="0.25" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>d₁</span>
-          <input data-resonator-key="hypoCurve1dScale" type="number" min="0" max="2" step="0.01" value="0.6" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R₂</span>
-          <input data-resonator-key="hypoCurve2RScale" type="number" min="0.1" max="3" step="0.05" value="1.4" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>r₂</span>
-          <input data-resonator-key="hypoCurve2rScale" type="number" min="0.05" max="2" step="0.01" value="0.4" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>d₂</span>
-          <input data-resonator-key="hypoCurve2dScale" type="number" min="0" max="2" step="0.01" value="0.9" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>Δt</span>
-          <input data-resonator-key="hypoTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.02" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R scale</span>
-          <input data-resonator-key="hypotrochoidRadiusScale" type="number" min="0.05" max="0.6" step="0.01" value="0.22" />
-        </label>
+        <div class="res-scrubber" data-min="1" data-max="32" data-step="0.5">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">θ×</span>
+          <span class="res-scrubber-value">12</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoThetaMultiplier" type="number" min="1" max="32" step="0.5" value="12" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="3" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R₁</span>
+          <span class="res-scrubber-value">1.00</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve1RScale" type="number" min="0.1" max="3" step="0.05" value="1" />
+        </div>
+        <div class="res-scrubber" data-min="0.05" data-max="2" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">r₁</span>
+          <span class="res-scrubber-value">0.25</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve1rScale" type="number" min="0.05" max="2" step="0.01" value="0.25" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="2" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">d₁</span>
+          <span class="res-scrubber-value">0.60</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve1dScale" type="number" min="0" max="2" step="0.01" value="0.6" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="3" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R₂</span>
+          <span class="res-scrubber-value">1.40</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve2RScale" type="number" min="0.1" max="3" step="0.05" value="1.4" />
+        </div>
+        <div class="res-scrubber" data-min="0.05" data-max="2" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">r₂</span>
+          <span class="res-scrubber-value">0.40</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve2rScale" type="number" min="0.05" max="2" step="0.01" value="0.4" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="2" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">d₂</span>
+          <span class="res-scrubber-value">0.90</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoCurve2dScale" type="number" min="0" max="2" step="0.01" value="0.9" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="0.2" data-step="0.001">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Δt</span>
+          <span class="res-scrubber-value">0.020</span>
+          <input class="res-scrubber-input" data-resonator-key="hypoTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.02" />
+        </div>
+        <div class="res-scrubber" data-min="0.05" data-max="0.6" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R sc</span>
+          <span class="res-scrubber-value">0.22</span>
+          <input class="res-scrubber-input" data-resonator-key="hypotrochoidRadiusScale" type="number" min="0.05" max="0.6" step="0.01" value="0.22" />
+        </div>
       </div>
-    </details>
+    </div>
 
-    <details class="resonator-section-toggle" data-curve-section="2">
-      <summary>Toroidal Knot</summary>
+    <div class="resonator-section-toggle" data-curve-section="2">
+      <div class="resonator-section-header">Toroidal Knot</div>
       <div class="resonator-formula-card">
         <p class="resonator-formula">u₁ = p₁θ + t, v₁ = q₁θ - λt</p>
         <p class="resonator-formula">x = (R + r cos(v)) cos(u), y = (R + r cos(v)) sin(u)</p>
       </div>
       <div class="resonator-grid-3">
-        <label class="resonator-inline-control">
-          <span>p₁</span>
-          <input data-resonator-key="toroidalP1" type="number" min="1" max="12" step="1" value="3" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>q₁</span>
-          <input data-resonator-key="toroidalQ1" type="number" min="1" max="12" step="1" value="2" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>p₂</span>
-          <input data-resonator-key="toroidalP2" type="number" min="1" max="12" step="1" value="5" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>q₂</span>
-          <input data-resonator-key="toroidalQ2" type="number" min="1" max="12" step="1" value="4" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R</span>
-          <input data-resonator-key="toroidalMajorRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.25" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>r</span>
-          <input data-resonator-key="toroidalMinorRadiusScale" type="number" min="0.02" max="0.4" step="0.01" value="0.12" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>R₂ / R</span>
-          <input data-resonator-key="toroidalMajor2Scale" type="number" min="0.1" max="3" step="0.05" value="1.3" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>r₂ / r</span>
-          <input data-resonator-key="toroidalMinor2Scale" type="number" min="0.1" max="3" step="0.05" value="0.8" />
-        </label>
-        <label class="resonator-inline-control">
-          <span>Δt</span>
-          <input data-resonator-key="toroidalTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.015" />
-        </label>
+        <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">p₁</span>
+          <span class="res-scrubber-value">3</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalP1" type="number" min="1" max="12" step="1" value="3" />
+        </div>
+        <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">q₁</span>
+          <span class="res-scrubber-value">2</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalQ1" type="number" min="1" max="12" step="1" value="2" />
+        </div>
+        <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">p₂</span>
+          <span class="res-scrubber-value">5</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalP2" type="number" min="1" max="12" step="1" value="5" />
+        </div>
+        <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">q₂</span>
+          <span class="res-scrubber-value">4</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalQ2" type="number" min="1" max="12" step="1" value="4" />
+        </div>
+        <div class="res-scrubber" data-min="0.05" data-max="0.7" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R</span>
+          <span class="res-scrubber-value">0.25</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalMajorRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.25" />
+        </div>
+        <div class="res-scrubber" data-min="0.02" data-max="0.4" data-step="0.01">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">r</span>
+          <span class="res-scrubber-value">0.12</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalMinorRadiusScale" type="number" min="0.02" max="0.4" step="0.01" value="0.12" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="3" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">R₂/R</span>
+          <span class="res-scrubber-value">1.30</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalMajor2Scale" type="number" min="0.1" max="3" step="0.05" value="1.3" />
+        </div>
+        <div class="res-scrubber" data-min="0.1" data-max="3" data-step="0.05">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">r₂/r</span>
+          <span class="res-scrubber-value">0.80</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalMinor2Scale" type="number" min="0.1" max="3" step="0.05" value="0.8" />
+        </div>
+        <div class="res-scrubber" data-min="0" data-max="0.2" data-step="0.001">
+          <div class="res-scrubber-fill"></div>
+          <span class="res-scrubber-label">Δt</span>
+          <span class="res-scrubber-value">0.015</span>
+          <input class="res-scrubber-input" data-resonator-key="toroidalTimeStep" type="number" min="0" max="0.2" step="0.001" value="0.015" />
+        </div>
       </div>
-    </details>
+    </div>
   </aside>
 
   <aside id="fractal-controls" aria-label="Fractal controls">
     <h3>Controls</h3>
-    <div class="fractal-control-row">
-      <div class="fractal-control-meta">
-        <label for="fractal-depth">Fractal Depth</label>
-        <span id="fractal-depth-value">3</span>
+    <div class="resonator-control-stack">
+      <div class="res-scrubber" data-min="0" data-max="5" data-step="1">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Fractal Depth</span>
+        <span class="res-scrubber-value">3</span>
+        <input id="fractal-depth" class="res-scrubber-input" type="number" min="0" max="5" step="1" value="3" />
       </div>
-      <input id="fractal-depth" type="range" min="0" max="5" step="1" value="3" />
-    </div>
-    <div class="fractal-control-row">
-      <div class="fractal-control-meta">
-        <label for="fractal-rot-x">Rotation X</label>
-        <span id="fractal-rot-x-value">0.010</span>
+      <div class="res-scrubber" data-min="0" data-max="0.05" data-step="0.001">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Rotation X</span>
+        <span class="res-scrubber-value">0.010</span>
+        <input id="fractal-rot-x" class="res-scrubber-input" type="number" min="0" max="0.05" step="0.001" value="0.01" />
       </div>
-      <input id="fractal-rot-x" type="range" min="0" max="0.05" step="0.001" value="0.01" />
-    </div>
-    <div class="fractal-control-row">
-      <div class="fractal-control-meta">
-        <label for="fractal-rot-y">Rotation Y</label>
-        <span id="fractal-rot-y-value">0.015</span>
+      <div class="res-scrubber" data-min="0" data-max="0.05" data-step="0.001">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Rotation Y</span>
+        <span class="res-scrubber-value">0.015</span>
+        <input id="fractal-rot-y" class="res-scrubber-input" type="number" min="0" max="0.05" step="0.001" value="0.015" />
       </div>
-      <input id="fractal-rot-y" type="range" min="0" max="0.05" step="0.001" value="0.015" />
-    </div>
-    <div class="fractal-control-row">
-      <div class="fractal-control-meta">
-        <label for="fractal-hue">Base Hue</label>
-        <span id="fractal-hue-value">200</span>
+      <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Base Hue</span>
+        <span class="res-scrubber-value">200</span>
+        <input id="fractal-hue" class="res-scrubber-input" type="number" min="0" max="360" step="1" value="200" />
       </div>
-      <input id="fractal-hue" type="range" min="0" max="360" step="1" value="200" />
-    </div>
-    <div class="fractal-control-row">
-      <div class="fractal-control-meta">
-        <label for="fractal-gap">Cube Gap</label>
-        <span id="fractal-gap-value">1.00</span>
+      <div class="res-scrubber" data-min="1" data-max="2" data-step="0.05">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Cube Gap</span>
+        <span class="res-scrubber-value">1.00</span>
+        <input id="fractal-gap" class="res-scrubber-input" type="number" min="1" max="2" step="0.05" value="1" />
       </div>
-      <input id="fractal-gap" type="range" min="1" max="2" step="0.05" value="1" />
     </div>
   </aside>
 
   <aside id="rose-controls" aria-label="Rose controls">
     <h3>Controls</h3>
-    <div class="rose-control-row">
-      <div class="rose-control-meta">
-        <label for="rose-cool-hue">Inner Hue</label>
-        <span id="rose-cool-hue-value">196</span>
+    <div class="resonator-control-stack">
+      <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Inner Hue</span>
+        <span class="res-scrubber-value">196</span>
+        <input id="rose-cool-hue" class="res-scrubber-input" type="number" min="0" max="360" step="1" value="196" />
       </div>
-      <input id="rose-cool-hue" type="range" min="0" max="360" step="1" value="196" />
-    </div>
-    <div class="rose-control-row">
-      <div class="rose-control-meta">
-        <label for="rose-warm-hue">Outer Hue</label>
-        <span id="rose-warm-hue-value">338</span>
+      <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Outer Hue</span>
+        <span class="res-scrubber-value">338</span>
+        <input id="rose-warm-hue" class="res-scrubber-input" type="number" min="0" max="360" step="1" value="338" />
       </div>
-      <input id="rose-warm-hue" type="range" min="0" max="360" step="1" value="338" />
     </div>
   </aside>
 
   <aside id="dupin-controls" aria-label="Dupin controls">
     <h3>Controls</h3>
-    <div class="dupin-control-row">
-      <div class="dupin-control-meta">
-        <label for="dupin-hue">Primary Hue</label>
-        <span id="dupin-hue-value">280</span>
-      </div>
-      <input id="dupin-hue" type="range" min="0" max="360" step="1" value="280" />
-    </div>
-  </aside>
-
-  <aside id="resonator-new-controls" aria-label="Resonator New controls">
-    <h3>Controls</h3>
-    <div class="resonator-control-row">
-      <div class="btn-glow-wrapper">
-        <div class="btn-glow"></div>
-        <button id="change-resonator-new-curve" type="button" class="resonator-curve-btn relative-btn">Change Curve</button>
-      </div>
-      <p id="resonator-new-curve-name" class="resonator-curve-name">Harmonic Phase</p>
-    </div>
-    <div class="resonator-control-row">
-      <div class="btn-glow-wrapper" style="width: 100%;">
-        <div class="btn-glow"></div>
-        <button id="cycle-resonator-new-palette" type="button" class="resonator-curve-btn relative-btn" style="width: 100%;">Cycle Palette</button>
-      </div>
-    </div>
-    <div class="resonator-control-row">
-      <div class="btn-glow-wrapper" style="width: 100%;">
-        <div class="btn-glow"></div>
-        <button id="save-resonator-new-screenshot" type="button" class="resonator-curve-btn relative-btn" style="width: 100%;">Save Screenshot</button>
+    <div class="resonator-control-stack">
+      <div class="res-scrubber" data-min="0" data-max="360" data-step="1">
+        <div class="res-scrubber-fill"></div>
+        <span class="res-scrubber-label">Primary Hue</span>
+        <span class="res-scrubber-value">280</span>
+        <input id="dupin-hue" class="res-scrubber-input" type="number" min="0" max="360" step="1" value="280" />
       </div>
     </div>
   </aside>
@@ -390,8 +405,7 @@
   <script src="artworks/fractal.js"></script>
   <script src="artworks/rose.js"></script>
   <script src="artworks/dupin.js"></script>
-  <script src="artworks/resonator-new.js"></script>
-  <script src="main.js"></script>
+<script src="main.js"></script>
   <script src="gsap-controller.js"></script>
 
 </body>
