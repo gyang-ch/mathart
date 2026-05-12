@@ -1003,7 +1003,7 @@ body.light-artwork .artist-credit {
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(90deg, #1448cc 0%, #1a5eeb 100%);
+  background: linear-gradient(90deg, #2767d5 0%, #1e63ee 100%);
   pointer-events: none;
   will-change: width;
 }
@@ -1024,7 +1024,7 @@ body.light-artwork .artist-credit {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.02em;
-  color: #6c7590;
+  color: #cbd2e2;
   position: relative;
   z-index: 1;
   white-space: nowrap;
@@ -1036,7 +1036,7 @@ body.light-artwork .artist-credit {
 }
 
 .res-scrubber:hover .res-scrubber-label {
-  color: #8a94ad;
+  color: #f0f4ff;
 }
 
 .res-scrubber-value {
