@@ -14,7 +14,7 @@ const RESONATOR_DEFAULTS = Object.freeze({
   hueOffset: 132,
   saturation: 90,
   brightness: 100,
-  rotationSpeedScale: 1,
+  rotationSpeedScale: 0.5,
   harmonicBg: 0,
   hypotrochoidBg: 4,
   toroidalBg: 5,
@@ -568,6 +568,14 @@ function cycleResonatorCurve() {
   return getResonatorCurveLabel();
 }
 
+function selectResonatorCurve(index) {
+  const clamped = Math.max(0, Math.min(RESONATOR_CURVE_MODES.length - 1, Math.round(index)));
+  if (clamped === resonatorCurveMode) return getResonatorCurveLabel();
+  resonatorCurveMode = clamped;
+  initResonator();
+  return getResonatorCurveLabel();
+}
+
 function setResonatorHue(newHue) {
   setResonatorConfig({ primaryHue: newHue });
 }
@@ -632,6 +640,7 @@ function resetResonatorConfig() {
 
 window.getResonatorCurveLabel = getResonatorCurveLabel;
 window.cycleResonatorCurve = cycleResonatorCurve;
+window.selectResonatorCurve = selectResonatorCurve;
 window.setResonatorHue = setResonatorHue;
 window.getResonatorHue = getResonatorHue;
 window.invertResonatorRotation = invertResonatorRotation;

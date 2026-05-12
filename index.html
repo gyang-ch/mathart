@@ -89,14 +89,24 @@
   <!-- Artwork-specific control panels-->
   <aside id="resonator-controls" aria-label="Resonator controls">
     <h3>Resonator Control Surface</h3>
-    <div class="resonator-control-row">
-      <p class="resonator-control-note">All edits apply immediately to the live equation.</p>
+    <div class="resonator-curve-selector" role="radiogroup" aria-label="Curve mode">
+      <label class="resonator-curve-option">
+        <input type="radio" name="resonator-curve" value="0" checked />
+        <span class="resonator-curve-dot"></span>
+        <span class="resonator-curve-option-label">Harmonic Phase</span>
+      </label>
+      <label class="resonator-curve-option">
+        <input type="radio" name="resonator-curve" value="1" />
+        <span class="resonator-curve-dot"></span>
+        <span class="resonator-curve-option-label">Hypotrochoidal Evolution</span>
+      </label>
+      <label class="resonator-curve-option">
+        <input type="radio" name="resonator-curve" value="2" />
+        <span class="resonator-curve-dot"></span>
+        <span class="resonator-curve-option-label">Toroidal Knot</span>
+      </label>
     </div>
-    <div class="resonator-button-grid">
-      <div class="btn-glow-wrapper">
-        <div class="btn-glow"></div>
-        <button id="change-resonator-curve" type="button" class="resonator-curve-btn relative-btn">Change Curve</button>
-      </div>
+    <div class="resonator-button-grid resonator-button-grid--3">
       <div class="btn-glow-wrapper">
         <div class="btn-glow"></div>
         <button id="invert-resonator-rotation" type="button" class="resonator-curve-btn relative-btn">Invert Spin</button>
@@ -109,9 +119,6 @@
         <div class="btn-glow"></div>
         <button id="save-resonator-screenshot" type="button" class="resonator-curve-btn relative-btn">Save PNG</button>
       </div>
-    </div>
-    <div class="resonator-control-row">
-      <p id="resonator-curve-name" class="resonator-curve-name">Harmonic Phase</p>
     </div>
 
     <details class="resonator-section-toggle" open>
@@ -138,7 +145,14 @@
             <input data-resonator-key="hueOffset" type="number" min="0" max="360" step="1" value="132" />
           </div>
         </label>
-        <div class="resonator-grid-3">
+        <label class="resonator-inline-control">
+          <span>Rotation speed</span>
+          <div class="resonator-input-pair">
+            <input data-resonator-key="rotationSpeedScale" type="range" min="0" max="6" step="0.05" value="0.5" />
+            <input data-resonator-key="rotationSpeedScale" type="number" min="0" max="6" step="0.05" value="0.5" />
+          </div>
+        </label>
+        <div class="resonator-grid-2">
           <label class="resonator-inline-control">
             <span>S</span>
             <input data-resonator-key="saturation" type="number" min="0" max="100" step="1" value="90" />
@@ -147,15 +161,11 @@
             <span>B</span>
             <input data-resonator-key="brightness" type="number" min="0" max="100" step="1" value="100" />
           </label>
-          <label class="resonator-inline-control">
-            <span>|ω|</span>
-            <input data-resonator-key="rotationSpeedScale" type="number" min="0" max="6" step="0.05" value="1" />
-          </label>
         </div>
       </div>
     </details>
 
-    <details class="resonator-section-toggle" open>
+    <details class="resonator-section-toggle" open data-curve-section="0">
       <summary>Harmonic Phase</summary>
       <div class="resonator-formula-card">
         <p class="resonator-formula">θ = 2πpf + t</p>
@@ -190,7 +200,7 @@
       </div>
     </details>
 
-    <details class="resonator-section-toggle">
+    <details class="resonator-section-toggle" data-curve-section="1">
       <summary>Hypotrochoidal Evolution</summary>
       <div class="resonator-formula-card">
         <p class="resonator-formula">x = (R-r) cos(t) + d cos(((R-r)/r)t)</p>
@@ -236,7 +246,7 @@
       </div>
     </details>
 
-    <details class="resonator-section-toggle">
+    <details class="resonator-section-toggle" data-curve-section="2">
       <summary>Toroidal Knot</summary>
       <div class="resonator-formula-card">
         <p class="resonator-formula">u₁ = p₁θ + t, v₁ = q₁θ - λt</p>

@@ -14,11 +14,15 @@ const dupinControls = document.getElementById("dupin-controls");
 const fractalControls = document.getElementById("fractal-controls");
 const resonatorControls = document.getElementById("resonator-controls");
 const resonatorNewControls = document.getElementById("resonator-new-controls");
-const changeResonatorCurveBtn = document.getElementById("change-resonator-curve");
 const invertResonatorRotationBtn = document.getElementById("invert-resonator-rotation");
 const resetResonatorControlsBtn = document.getElementById("reset-resonator-controls");
 const saveResonatorScreenshotBtn = document.getElementById("save-resonator-screenshot");
-const resonatorCurveName = document.getElementById("resonator-curve-name");
+const resonatorCurveRadios = resonatorControls
+  ? Array.from(resonatorControls.querySelectorAll('input[name="resonator-curve"]'))
+  : [];
+const resonatorCurveSections = resonatorControls
+  ? Array.from(resonatorControls.querySelectorAll('[data-curve-section]'))
+  : [];
 const resonatorHueInput = document.getElementById("resonator-hue");
 const resonatorConfigInputs = resonatorControls
   ? Array.from(resonatorControls.querySelectorAll("[data-resonator-key]"))
@@ -449,10 +453,38 @@ function applyDupinHueValue() {
   window.setDupinHue(Number(dupinHueInput.value));
 }
 
-function syncResonatorCurveLabel() {
-  if (!resonatorCurveName) return;
-  if (!window.getResonatorCurveLabel) return;
-  resonatorCurveName.textContent = window.getResonatorCurveLabel();
+function syncResonatorCurveSelection() {
+  if (!resonatorCurveRadios.length) return;
+  if (!window.getResonatorConfig) return;
+  const config = window.getResonatorConfig();
+  const currentMode = config.curveMode ?? 0;
+  resonatorCurveRadios.forEach((radio) => {
+    radio.checked = Number(radio.value) === currentMode;
+  });
+}
+
+function showResonatorCurveSection(index, animate) {
+  resonatorCurveSections.forEach((section) => {
+    gsap.killTweensOf(section);
+    if (Number(section.dataset.curveSection) === index) {
+      section.open = true;
+      if (animate) {
+        gsap.set(section, { display: "block" });
+        gsap.fromTo(section, { opacity: 0, y: 7 }, { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" });
+      } else {
+        gsap.set(section, { display: "block", opacity: 1, y: 0 });
+      }
+    } else {
+      if (animate) {
+        gsap.to(section, {
+          opacity: 0, duration: 0.16, ease: "power2.in",
+          onComplete: () => gsap.set(section, { display: "none", y: 0 })
+        });
+      } else {
+        gsap.set(section, { display: "none", opacity: 0 });
+      }
+    }
+  });
 }
 
 function syncResonatorConfigControls() {
@@ -600,7 +632,7 @@ function activateSection(section, options = {}) {
   if (resonatorControls) {
     resonatorControls.classList.toggle("visible", section.id === "s1");
     if (section.id === "s1") {
-      syncResonatorCurveLabel();
+      syncResonatorCurveSelection();
     }
   }
   if (fractalControls) {
@@ -875,17 +907,20 @@ if (roseControls && roseCoolHueInput && roseWarmHueInput) {
   applyRoseControlValues();
 }
 
-if (resonatorControls && changeResonatorCurveBtn) {
+if (resonatorControls) {
   resonatorControls.classList.remove("visible");
-  syncResonatorCurveLabel();
+  syncResonatorCurveSelection();
   syncResonatorConfigControls();
-  changeResonatorCurveBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    playButtonShine(changeResonatorCurveBtn, event);
-    if (!window.cycleResonatorCurve) return;
-    window.cycleResonatorCurve();
-    syncResonatorCurveLabel();
+  const initialMode = window.getResonatorConfig ? (window.getResonatorConfig().curveMode ?? 0) : 0;
+  showResonatorCurveSection(initialMode, false);
+  resonatorCurveRadios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (!radio.checked) return;
+      if (!window.selectResonatorCurve) return;
+      const modeIndex = Number(radio.value);
+      window.selectResonatorCurve(modeIndex);
+      showResonatorCurveSection(modeIndex, true);
+    });
   });
 }
 
@@ -906,7 +941,7 @@ if (resonatorControls && resetResonatorControlsBtn) {
     playButtonShine(resetResonatorControlsBtn, event);
     if (!window.resetResonatorConfig) return;
     window.resetResonatorConfig();
-    syncResonatorCurveLabel();
+    syncResonatorCurveSelection();
     syncResonatorConfigControls();
   });
 }

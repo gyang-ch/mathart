@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Figure 2 - Line Bundle Construction</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #c8c8c8;
+      font-family: Georgia, 'Times New Roman', serif;
+      padding: 36px 24px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+    header {
+      text-align: center;
+      max-width: 860px;
+    }
+    header h1 {
+      font-size: 18px;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+    header p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #333;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    input[type=range] { width: 150px; cursor: pointer; accent-color: #1a1a2e; }
+    .panels {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .panel-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    canvas {
+      display: block;
+      background: white;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.20);
+    }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      padding: 9px 22px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      font: 13px Georgia, serif;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+    button:hover { background: #3a3a5e; }
+    button.svg-btn { background: #1a3a2e; }
+    button.svg-btn:hover { background: #2a5a4e; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Figure 2. Line Bundle Construction</h1>
+    <p>For each index <em>i</em> = 0, &hellip;, <em>N</em>&minus;1, a shared parameter <em>p</em> = <em>i</em>/<em>N</em> is
+       evaluated on both Curve A and Curve B; the paired samples are connected by a segment to form the line field.</p>
+    <div class="controls">
+      <label for="nSlider">N (segments):</label>
+      <input type="range" id="nSlider" min="4" max="40" value="12">
+      <span id="nVal">12</span>
+    </div>
+  </header>
+
+  <div class="panels">
+    <div class="panel-wrap">
+      <canvas id="fig-a" width="580" height="510"></canvas>
+      <div class="btn-row">
+        <button onclick="saveHiResPng('fig-a','figure2a-harmonic-phase')">Download PNG</button>
+        <button class="svg-btn" onclick="saveSvg('fig-a','figure2a-harmonic-phase')">Download SVG</button>
+      </div>
+    </div>
+    <div class="panel-wrap">
+      <canvas id="fig-b" width="580" height="510"></canvas>
+      <div class="btn-row">
+        <button onclick="saveHiResPng('fig-b','figure2b-hypotrochoidal')">Download PNG</button>
+        <button class="svg-btn" onclick="saveSvg('fig-b','figure2b-hypotrochoidal')">Download SVG</button>
+      </div>
+    </div>
+    <div class="panel-wrap">
+      <canvas id="fig-c" width="580" height="510"></canvas>
+      <div class="btn-row">
+        <button onclick="saveHiResPng('fig-c','figure2c-toroidal-knot')">Download PNG</button>
+        <button class="svg-btn" onclick="saveSvg('fig-c','figure2c-toroidal-knot')">Download SVG</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TAU = Math.PI * 2;
+
+    // Colour palette
+    const COL_A   = '#c62828';
+    const COL_B   = '#1565c0';
+    const COL_SEG = '#37474f';
+    const COL_HL  = '#00838f';
+
+    // Canvas / layout constants (logical pixels)
+    const CW     = 580;
+    const CH     = 510;
+    const DRAW_H = 510;
+    const PAD    = 40;
+
+    // Curve definitions (artwork defaults)
+    const harmonicA = p => {
+      const theta = TAU * p * 4, phi = TAU * p;
+      return [Math.sin(theta) * Math.cos(phi * 2),
+              Math.cos(theta * 1.5) * Math.sin(phi)];
+    };
+    const harmonicB = p => {
+      const theta = TAU * p * 4, phi = TAU * p;
+      return [Math.cos(theta), Math.sin(phi + theta)];
+    };
+    const hypoA = p => {
+      const th = TAU * p * 12;
+      return [0.75 * Math.cos(th) + 0.6 * Math.cos(3 * th),
+              0.75 * Math.sin(th) - 0.6 * Math.sin(3 * th)];
+    };
+    const hypoB = p => {
+      const th = TAU * p * 12;
+      return [1.0 * Math.cos(th) + 0.9 * Math.cos(2.5 * th),
+              1.0 * Math.sin(th) - 0.9 * Math.sin(2.5 * th)];
+    };
+    const toroA = p => {
+      const th = TAU * p, u = 3*th, v = 2*th;
+      const R = 0.65, r = 0.30;
+      return [(R + r*Math.cos(v))*Math.cos(u), (R + r*Math.cos(v))*Math.sin(u)];
+    };
+    const toroB = p => {
+      const th = TAU * p, u = 5*th, v = 4*th;
+      const R = 0.845, r = 0.24;
+      return [(R + r*Math.cos(v))*Math.cos(u), (R + r*Math.cos(v))*Math.sin(u)];
+    };
+
+    // Helpers
+    const linspace = (fn, n) => Array.from({length: n+1}, (_, k) => fn(k/n));
+    const sampleN  = (fn, n) => Array.from({length: n},   (_, k) => fn(k/n));
+    const f2       = n => Math.round(n * 100) / 100;  // 2 decimal places for SVG
+
+    function makeProj(ptsA, ptsB) {
+      let x0=Infinity, x1=-Infinity, y0=Infinity, y1=-Infinity;
+      for (const [x,y] of [...ptsA, ...ptsB]) {
+        if (x < x0) x0=x; if (x > x1) x1=x;
+        if (y < y0) y0=y; if (y > y1) y1=y;
+      }
+      const scX = (CW     - PAD*2) / (x1-x0 || 1);
+      const scY = (DRAW_H - PAD*2) / (y1-y0 || 1);
+      const sc  = Math.min(scX, scY);
+      const ox  = CW/2     - ((x0+x1)/2) * sc;
+      const oy  = DRAW_H/2 - ((y0+y1)/2) * sc;
+      return ([x,y]) => [ox + x*sc, oy + y*sc];
+    }
+
+    // Core drawing — works on any Canvas 2D context (display or offscreen)
+    function drawToCtx(ctx, fA, fB, N) {
+      const fullA = linspace(fA, 1200);
+      const fullB = linspace(fB, 1200);
+      const sA    = sampleN(fA, N);
+      const sB    = sampleN(fB, N);
+      const proj  = makeProj(fullA, fullB);
+
+      // Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, CW, CH);
+      ctx.fillStyle = '#f4f4f4';
+      ctx.fillRect(0, 0, CW, DRAW_H);
+
+      // Connecting segments
+      ctx.save();
+      ctx.globalAlpha = 0.88;
+      ctx.strokeStyle = COL_SEG;
+      ctx.lineWidth = 2.4;
+      for (let k = 0; k < N; k++) {
+        const [ax, ay] = proj(sA[k]);
+        const [bx, by] = proj(sB[k]);
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      }
+      ctx.restore();
+
+      // Highlighted representative pair
+      const kh = Math.floor(N * 0.18);
+      {
+        const [ax, ay] = proj(sA[kh]);
+        const [bx, by] = proj(sB[kh]);
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.strokeStyle = COL_HL;
+        ctx.lineWidth = 2.8;
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+        ctx.fillStyle = COL_HL;
+        ctx.beginPath(); ctx.arc(ax, ay, 6.5, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(bx, by, 6.5, 0, TAU); ctx.fill();
+        ctx.font = 'italic 12px Georgia, serif';
+        ctx.fillStyle = '#004d57';
+        ctx.textAlign = 'left';
+        ctx.fillText('p = i / N', (ax+bx)/2 + 10, (ay+by)/2 - 6);
+        ctx.restore();
+      }
+
+      // Curve A: thin solid red (background guide)
+      ctx.save();
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = COL_A;
+      ctx.lineWidth = 1.3;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      let [qx, qy] = proj(fullA[0]);
+      ctx.moveTo(qx, qy);
+      for (let k = 1; k <= 1200; k++) {
+        [qx, qy] = proj(fullA[k]);
+        ctx.lineTo(qx, qy);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Curve B: thin dashed blue (background guide)
+      ctx.save();
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = COL_B;
+      ctx.lineWidth = 1.3;
+      ctx.setLineDash([8, 5]);
+      ctx.beginPath();
+      [qx, qy] = proj(fullB[0]);
+      ctx.moveTo(qx, qy);
+      for (let k = 1; k <= 1200; k++) {
+        [qx, qy] = proj(fullB[k]);
+        ctx.lineTo(qx, qy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+
+      // Sample dots A: filled red
+      ctx.fillStyle = COL_A;
+      for (const pt of sA) {
+        const [sx, sy] = proj(pt);
+        ctx.beginPath(); ctx.arc(sx, sy, 6.0, 0, TAU); ctx.fill();
+      }
+
+      // Sample dots B: open blue
+      for (const pt of sB) {
+        const [sx, sy] = proj(pt);
+        ctx.beginPath(); ctx.arc(sx, sy, 6.0, 0, TAU);
+        ctx.strokeStyle = COL_B;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+    }
+
+    // Render to the visible canvas
+    function renderPanel(canvasId, fA, fB, N) {
+      drawToCtx(document.getElementById(canvasId).getContext('2d'), fA, fB, N);
+    }
+
+    // Mode definitions
+    const MODES = [
+      { id:'fig-a', fA:harmonicA, fB:harmonicB, name:'figure2a-harmonic-phase' },
+      { id:'fig-b', fA:hypoA,     fB:hypoB,     name:'figure2b-hypotrochoidal' },
+      { id:'fig-c', fA:toroA,     fB:toroB,     name:'figure2c-toroidal-knot'  },
+    ];
+
+    function renderAll(N) {
+      for (const m of MODES) renderPanel(m.id, m.fA, m.fB, N);
+    }
+
+    // Controls
+    const slider  = document.getElementById('nSlider');
+    const nValEl  = document.getElementById('nVal');
+    let N = 12;
+
+    slider.addEventListener('input', () => {
+      N = +slider.value;
+      nValEl.textContent = N;
+      renderAll(N);
+    });
+
+    // High-resolution PNG (3x offscreen canvas)
+    function saveHiResPng(canvasId, filename) {
+      const SCALE = 3;
+      const m   = MODES.find(x => x.id === canvasId);
+      const off = document.createElement('canvas');
+      off.width  = CW * SCALE;
+      off.height = CH * SCALE;
+      const ctx  = off.getContext('2d');
+      ctx.scale(SCALE, SCALE);
+      drawToCtx(ctx, m.fA, m.fB, N);
+      const a = document.createElement('a');
+      a.download = filename + '.png';
+      a.href = off.toDataURL('image/png');
+      a.click();
+    }
+
+    // SVG export (true vector)
+    function saveSvg(canvasId, filename) {
+      const m     = MODES.find(x => x.id === canvasId);
+      const fullA = linspace(m.fA, 1200);
+      const fullB = linspace(m.fB, 1200);
+      const sA    = sampleN(m.fA, N);
+      const sB    = sampleN(m.fB, N);
+      const proj  = makeProj(fullA, fullB);
+      const kh    = Math.floor(N * 0.18);
+
+      const el = [];
+
+      // Header
+      el.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${CW}" height="${CH}" viewBox="0 0 ${CW} ${CH}">`);
+
+      // Background
+      el.push(`<rect width="${CW}" height="${CH}" fill="#ffffff"/>`);
+      el.push(`<rect width="${CW}" height="${DRAW_H}" fill="#f4f4f4"/>`);
+
+      // Connecting segments
+      const segG = [`<g stroke="${COL_SEG}" stroke-width="2.4" opacity="0.88">`];
+      for (let k = 0; k < N; k++) {
+        const [ax, ay] = proj(sA[k]);
+        const [bx, by] = proj(sB[k]);
+        segG.push(`  <line x1="${f2(ax)}" y1="${f2(ay)}" x2="${f2(bx)}" y2="${f2(by)}"/>`);
+      }
+      segG.push(`</g>`);
+      el.push(segG.join('\n'));
+
+      // Highlighted pair
+      const [ahx, ahy] = proj(sA[kh]);
+      const [bhx, bhy] = proj(sB[kh]);
+      const lx = f2((ahx+bhx)/2 + 10), ly = f2((ahy+bhy)/2 - 6);
+      el.push(`<g stroke="${COL_HL}" fill="${COL_HL}">`);
+      el.push(`  <line x1="${f2(ahx)}" y1="${f2(ahy)}" x2="${f2(bhx)}" y2="${f2(bhy)}" stroke-width="2.8"/>`);
+      el.push(`  <circle cx="${f2(ahx)}" cy="${f2(ahy)}" r="6.5"/>`);
+      el.push(`  <circle cx="${f2(bhx)}" cy="${f2(bhy)}" r="6.5"/>`);
+      el.push(`</g>`);
+      el.push(`<text x="${lx}" y="${ly}" font-family="Georgia,serif" font-size="12" font-style="italic" fill="#004d57">p = i/N</text>`);
+
+      // Curve A path
+      const dA = fullA.map(([x,y], i) => {
+        const [px, py] = proj([x, y]);
+        return (i === 0 ? `M ${f2(px)} ${f2(py)}` : `L ${f2(px)} ${f2(py)}`);
+      }).join(' ');
+      el.push(`<path d="${dA}" fill="none" stroke="${COL_A}" stroke-width="1.3" opacity="0.45"/>`);
+
+      // Curve B path (dashed)
+      const dB = fullB.map(([x,y], i) => {
+        const [px, py] = proj([x, y]);
+        return (i === 0 ? `M ${f2(px)} ${f2(py)}` : `L ${f2(px)} ${f2(py)}`);
+      }).join(' ');
+      el.push(`<path d="${dB}" fill="none" stroke="${COL_B}" stroke-width="1.3" stroke-dasharray="8 5" opacity="0.45"/>`);
+
+      // Sample dots A
+      const dotsA = sA.map(pt => {
+        const [sx, sy] = proj(pt);
+        return `  <circle cx="${f2(sx)}" cy="${f2(sy)}" r="6"/>`;
+      });
+      el.push(`<g fill="${COL_A}">\n${dotsA.join('\n')}\n</g>`);
+
+      // Sample dots B
+      const dotsB = sB.map(pt => {
+        const [sx, sy] = proj(pt);
+        return `  <circle cx="${f2(sx)}" cy="${f2(sy)}" r="6"/>`;
+      });
+      el.push(`<g fill="none" stroke="${COL_B}" stroke-width="2.5">\n${dotsB.join('\n')}\n</g>`);
+
+      el.push(`</svg>`);
+
+      const blob = new Blob([el.join('\n')], {type: 'image/svg+xml'});
+      const a = document.createElement('a');
+      a.download = filename + '.svg';
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    renderAll(N);
+  </script>
+</body>
+</html>
