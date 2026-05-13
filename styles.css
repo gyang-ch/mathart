@@ -587,7 +587,7 @@ body.light-artwork #info-panel {
   padding: 14px 12px 12px;
   pointer-events: none;
   position: fixed;
-  right: 40px;
+  right: 12px;
   top: calc(50% + 56px);
   transform: translateY(-50%);
   transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
@@ -1116,7 +1116,7 @@ body.light-artwork .artist-credit {
   #fractal-controls,
   #rose-controls,
   #dupin-controls {
-    right: 16px;
+    right: 8px;
     top: calc(50% + 72px);
     width: 188px;
   }

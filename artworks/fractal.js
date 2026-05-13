@@ -1,10 +1,11 @@
+import { reducedMotion } from '../js/state.js';
+
 // FRACTAL
 let fractalPG = null;
 let fractalBoxes = [];
 let currentDepth = -1;
 let currentGap = -1;
 
-let fractalControlsReady = false;
 let fractalSettings = {
   depth: 3,
   rotXSpeed: 0.01,
@@ -13,63 +14,21 @@ let fractalSettings = {
   gap: 1
 };
 
-let depthInput = null;
-let rotXInput = null;
-let rotYInput = null;
-let hueInput = null;
-let gapInput = null;
+export function setFractalSettings(partial) {
+  Object.assign(fractalSettings, partial);
+}
+
+export function getFractalSettings() {
+  return { ...fractalSettings };
+}
 
 function clampFractalNumber(value, minValue, maxValue) {
   return min(max(Number(value) || 0, minValue), maxValue);
 }
 
-function syncFractalLabels() {
-  if (!window.updateScrubberDisplay) return;
-  [depthInput, rotXInput, rotYInput, hueInput, gapInput].forEach((input) => {
-    if (!input) return;
-    const scrubber = input.closest(".res-scrubber");
-    if (scrubber) window.updateScrubberDisplay(scrubber);
-  });
-}
-
-function applyFractalControls() {
-  if (!depthInput || !rotXInput || !rotYInput || !hueInput || !gapInput) return;
-
-  fractalSettings.depth = floor(clampFractalNumber(depthInput.value, 0, 7));
-  fractalSettings.rotXSpeed = clampFractalNumber(rotXInput.value, 0, 0.05);
-  fractalSettings.rotYSpeed = clampFractalNumber(rotYInput.value, 0, 0.05);
-  fractalSettings.baseHue = clampFractalNumber(hueInput.value, 0, 360);
-  fractalSettings.gap = clampFractalNumber(gapInput.value, 1, 2);
-  syncFractalLabels();
-}
-
-function bindFractalControls() {
-  if (fractalControlsReady) return;
-
-  depthInput = document.getElementById("fractal-depth");
-  rotXInput = document.getElementById("fractal-rot-x");
-  rotYInput = document.getElementById("fractal-rot-y");
-  hueInput = document.getElementById("fractal-hue");
-  gapInput = document.getElementById("fractal-gap");
-
-  const inputs = [depthInput, rotXInput, rotYInput, hueInput, gapInput];
-  if (inputs.some((input) => !input)) return;
-
-  inputs.forEach((input) => {
-    input.addEventListener("input", () => {
-      applyFractalControls();
-    });
-  });
-
-  applyFractalControls();
-  fractalControlsReady = true;
-}
-
-function initFractal() {
+export function initFractal() {
   fractalPG = createGraphics(windowWidth, windowHeight, WEBGL);
   fractalPG.colorMode(HSB, 360, 100, 100, 100);
-  bindFractalControls();
-  applyFractalControls();
   generateFractalStructure();
 }
 
@@ -77,7 +36,6 @@ function generateFractalStructure() {
   fractalBoxes = [];
   currentDepth = fractalSettings.depth;
   currentGap = fractalSettings.gap;
-
   const baseSize = min(width, height) * 0.38;
   createBoxes(0, 0, 0, baseSize, currentDepth, currentDepth);
 }
@@ -92,12 +50,10 @@ function createBoxes(x, y, z, size, depth, targetDepth) {
     fractalBoxes.push({ x, y, z, size });
     return;
   }
-
   const nextSize = size / 3;
   const level = targetDepth - depth;
   const extraLevel = max(0, level - 3);
   const keepRate = extraLevel === 0 ? 1 : pow(0.7, extraLevel);
-
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       for (let k = -1; k <= 1; k++) {
@@ -105,7 +61,6 @@ function createBoxes(x, y, z, size, depth, targetDepth) {
         if (i === 0) centerCount++;
         if (j === 0) centerCount++;
         if (k === 0) centerCount++;
-
         if (centerCount < 2) {
           const nx = x + i * nextSize;
           const ny = y + j * nextSize;
@@ -119,7 +74,7 @@ function createBoxes(x, y, z, size, depth, targetDepth) {
   }
 }
 
-function drawFractal() {
+export function drawFractal() {
   if (!fractalPG) initFractal();
 
   if (currentDepth !== fractalSettings.depth || abs(currentGap - fractalSettings.gap) > 0.0001) {

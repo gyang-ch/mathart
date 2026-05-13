@@ -1,3 +1,5 @@
+import { motionFactor } from '../js/state.js';
+
 // DUPIN CYCLIDE
 let dupinPG = null;
 let dupinTime = 0;
@@ -87,5 +89,4 @@ function getDupinHue() {
   return dupinPrimaryHue;
 }
 
-window.setDupinHue = setDupinHue;
-window.getDupinHue = getDupinHue;
+export { initDupin, drawDupin, setDupinHue, getDupinHue };

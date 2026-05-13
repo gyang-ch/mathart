@@ -61,8 +61,7 @@ function getRosePalette() {
   };
 }
 
-window.setRosePalette = setRosePalette;
-window.getRosePalette = getRosePalette;
+export { drawMaurerRose, setRosePalette, getRosePalette };
 
 function drawMaurerRose() {
   background(10);

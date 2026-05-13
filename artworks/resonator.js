@@ -1,3 +1,5 @@
+import { motionFactor } from '../js/state.js';
+
 // RESONATOR
 const RESONATOR_CURVE_MODES = [
   { key: "harmonic", label: "Harmonic Phase" },
@@ -638,12 +640,16 @@ function resetResonatorConfig() {
   return getResonatorConfig();
 }
 
-window.getResonatorCurveLabel = getResonatorCurveLabel;
-window.cycleResonatorCurve = cycleResonatorCurve;
-window.selectResonatorCurve = selectResonatorCurve;
-window.setResonatorHue = setResonatorHue;
-window.getResonatorHue = getResonatorHue;
-window.invertResonatorRotation = invertResonatorRotation;
-window.getResonatorConfig = getResonatorConfig;
-window.setResonatorConfig = setResonatorConfig;
-window.resetResonatorConfig = resetResonatorConfig;
+export {
+  initResonator,
+  drawResonator,
+  getResonatorCurveLabel,
+  cycleResonatorCurve,
+  selectResonatorCurve,
+  setResonatorHue,
+  getResonatorHue,
+  invertResonatorRotation,
+  getResonatorConfig,
+  setResonatorConfig,
+  resetResonatorConfig
+};

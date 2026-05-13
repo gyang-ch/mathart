@@ -1,3 +1,5 @@
+import { motionFactor } from '../js/state.js';
+
 // MORPHOGENESIS
 // Reaction-diffusion surface rendered via a GLSL ray-marcher.
 // Move cursor to rotate. Click or press P to cycle colour palette.
@@ -170,4 +172,4 @@ function cycleMorphoPalette() {
   morphoActivePalette = MORPHO_PALETTES[Math.floor(Math.random() * MORPHO_PALETTES.length)];
 }
 
-window.cycleMorphoPalette = cycleMorphoPalette;
+export { initMorphogenesis, drawMorphogenesis, cycleMorphoPalette };
