@@ -571,6 +571,7 @@ body.light-artwork #info-panel {
 
 
 #resonator-controls,
+#morphogenesis-controls,
 #fractal-controls,
 #rose-controls,
 #dupin-controls {
@@ -605,6 +606,7 @@ body.light-artwork #info-panel {
 }
 
 #resonator-controls.visible,
+#morphogenesis-controls.visible,
 #fractal-controls.visible,
 #rose-controls.visible,
 #dupin-controls.visible {
@@ -613,6 +615,7 @@ body.light-artwork #info-panel {
 }
 
 #resonator-controls h3,
+#morphogenesis-controls h3,
 #fractal-controls h3,
 #rose-controls h3,
 #dupin-controls h3 {
@@ -1113,6 +1116,7 @@ body.light-artwork .artist-credit {
   }
 
   #resonator-controls,
+  #morphogenesis-controls,
   #fractal-controls,
   #rose-controls,
   #dupin-controls {

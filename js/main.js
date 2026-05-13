@@ -10,6 +10,7 @@ import { initNav, setActiveNav, setReachedDots, getNavProgressFromScroll, refres
 import { updateCaption } from './caption-fx.js';
 
 import { buildControls as buildResonatorControls, onSectionChange as resonatorOnSectionChange } from '../artworks/resonator-controls.js';
+import { buildControls as buildMorphogenesisControls } from '../artworks/morphogenesis-controls.js';
 import { buildControls as buildFractalControls } from '../artworks/fractal-controls.js';
 import { buildControls as buildRoseControls } from '../artworks/rose-controls.js';
 import { buildControls as buildDupinControls } from '../artworks/dupin-controls.js';
@@ -79,7 +80,7 @@ function runModeTransitionFx() {
 }
 
 function handleSectionActivate(sectionEl, _options, controlPanels) {
-  const { resonatorPanel, fractalPanel, rosePanel, dupinPanel } = controlPanels;
+  const { resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel } = controlPanels;
   const id = sectionEl.id;
   const newMode = Number(sectionEl.dataset.mode);
 
@@ -90,9 +91,10 @@ function handleSectionActivate(sectionEl, _options, controlPanels) {
   }
 
   resonatorPanel?.classList.toggle("visible", id === "s1");
-  fractalPanel?.classList.toggle("visible", id === "s3");
-  rosePanel?.classList.toggle("visible", id === "s4");
-  dupinPanel?.classList.toggle("visible", id === "s5");
+  morphoPanel?.classList.toggle("visible",    id === "s2");
+  fractalPanel?.classList.toggle("visible",   id === "s3");
+  rosePanel?.classList.toggle("visible",      id === "s4");
+  dupinPanel?.classList.toggle("visible",     id === "s5");
 
   if (id === "s1") resonatorOnSectionChange();
 
@@ -100,12 +102,13 @@ function handleSectionActivate(sectionEl, _options, controlPanels) {
 }
 
 function handleIntroActivate(controlPanels) {
-  const { resonatorPanel, fractalPanel, rosePanel, dupinPanel } = controlPanels;
+  const { resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel } = controlPanels;
   document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
   document.getElementById("intro")?.classList.add("active");
   updateCaption("", "");
   setActiveNav("");
   resonatorPanel?.classList.remove("visible");
+  morphoPanel?.classList.remove("visible");
   fractalPanel?.classList.remove("visible");
   rosePanel?.classList.remove("visible");
   dupinPanel?.classList.remove("visible");
@@ -123,12 +126,13 @@ window.setup = function () {
   cnv.parent("canvas-container");
 
   const resonatorPanel = buildResonatorControls();
+  const morphoPanel    = buildMorphogenesisControls();
   const fractalPanel   = buildFractalControls();
   const rosePanel      = buildRoseControls();
   const dupinPanel     = buildDupinControls();
-  document.body.append(resonatorPanel, fractalPanel, rosePanel, dupinPanel);
+  document.body.append(resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel);
 
-  const controlPanels = { resonatorPanel, fractalPanel, rosePanel, dupinPanel };
+  const controlPanels = { resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel };
   const sections    = gsap.utils.toArray("section");
   const artSections = gsap.utils.toArray("section[data-mode]");
   const introSection = document.getElementById("intro");
@@ -200,7 +204,7 @@ window.windowResized = function () {
 };
 
 window.mousePressed = function (event) {
-  if (event?.target?.closest("#rose-controls, #fractal-controls, #resonator-controls, .regenerate-btn")) return;
+  if (event?.target?.closest("#resonator-controls, #morphogenesis-controls, #fractal-controls, #rose-controls, #dupin-controls, .regenerate-btn")) return;
   if (mode === 1) invertResonatorRotation();
   else if (mode === 2) cycleMorphoPalette();
 };
