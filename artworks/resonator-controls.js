@@ -32,7 +32,7 @@ export function buildControls() {
       <label class="resonator-curve-option">
         <input type="radio" name="resonator-curve" value="2" />
         <span class="resonator-curve-dot"></span>
-        <span class="resonator-curve-option-label">Toroidal Knot</span>
+        <span class="resonator-curve-option-label">Toroidal Knot Harmonics</span>
       </label>
     </div>
     <div class="resonator-button-grid resonator-button-grid--3">
