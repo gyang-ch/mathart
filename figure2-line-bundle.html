@@ -8,11 +8,11 @@
     body {
       background: #c8c8c8;
       font-family: Georgia, 'Times New Roman', serif;
-      padding: 36px 24px 48px;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 0;
     }
     header {
       text-align: center;
@@ -42,7 +42,7 @@
     input[type=range] { width: 150px; cursor: pointer; accent-color: #1a1a2e; }
     .panels {
       display: flex;
-      gap: 28px;
+      gap: 0;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -50,7 +50,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 0;
     }
     canvas {
       display: block;
@@ -90,21 +90,21 @@
 
   <div class="panels">
     <div class="panel-wrap">
-      <canvas id="fig-a" width="580" height="510"></canvas>
+      <canvas id="fig-a" width="580" height="590"></canvas>
       <div class="btn-row">
         <button onclick="saveHiResPng('fig-a','figure2a-harmonic-phase')">Download PNG</button>
         <button class="svg-btn" onclick="saveSvg('fig-a','figure2a-harmonic-phase')">Download SVG</button>
       </div>
     </div>
     <div class="panel-wrap">
-      <canvas id="fig-b" width="580" height="510"></canvas>
+      <canvas id="fig-b" width="580" height="590"></canvas>
       <div class="btn-row">
         <button onclick="saveHiResPng('fig-b','figure2b-hypotrochoidal')">Download PNG</button>
         <button class="svg-btn" onclick="saveSvg('fig-b','figure2b-hypotrochoidal')">Download SVG</button>
       </div>
     </div>
     <div class="panel-wrap">
-      <canvas id="fig-c" width="580" height="510"></canvas>
+      <canvas id="fig-c" width="580" height="590"></canvas>
       <div class="btn-row">
         <button onclick="saveHiResPng('fig-c','figure2c-toroidal-knot')">Download PNG</button>
         <button class="svg-btn" onclick="saveSvg('fig-c','figure2c-toroidal-knot')">Download SVG</button>
@@ -119,13 +119,13 @@
     const COL_A   = '#c62828';
     const COL_B   = '#1565c0';
     const COL_SEG = '#37474f';
-    const COL_HL  = '#00838f';
+    const COL_HL  = '#2e7d32';
 
     // Canvas / layout constants (logical pixels)
     const CW     = 580;
-    const CH     = 510;
+    const CH     = 590;   // extra 80 px for legend strip below drawing area
     const DRAW_H = 510;
-    const PAD    = 40;
+    const PAD    = 20;
 
     // Curve definitions (artwork defaults)
     const harmonicA = p => {
@@ -216,10 +216,15 @@
         ctx.fillStyle = COL_HL;
         ctx.beginPath(); ctx.arc(ax, ay, 6.5, 0, TAU); ctx.fill();
         ctx.beginPath(); ctx.arc(bx, by, 6.5, 0, TAU); ctx.fill();
-        ctx.font = 'italic 12px Georgia, serif';
-        ctx.fillStyle = '#004d57';
+        ctx.font = 'italic 26px Georgia, serif';
         ctx.textAlign = 'left';
-        ctx.fillText('p = i / N', (ax+bx)/2 + 10, (ay+by)/2 - 6);
+        ctx.lineJoin = 'round';
+        const tlx = (ax+bx)/2 + 10, tly = (ay+by)/2 - 6;
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'white';
+        ctx.strokeText('p = i / N', tlx, tly);
+        ctx.fillStyle = '#1b5e20';
+        ctx.fillText('p = i / N', tlx, tly);
         ctx.restore();
       }
 
@@ -271,6 +276,33 @@
         ctx.lineWidth = 2.5;
         ctx.stroke();
       }
+
+      // Legend strip below drawing area — never overlaps the figure
+      const legX0 = CW / 2 - 57;
+      const legX1 = legX0 + 40;
+      const legTX = legX1 + 8;
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.font = 'bold 22px Georgia, serif';
+      ctx.textAlign = 'left';
+
+      // Curve A
+      ctx.strokeStyle = COL_A;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(legX0, DRAW_H + 28); ctx.lineTo(legX1, DRAW_H + 28); ctx.stroke();
+      ctx.fillStyle = COL_A;
+      ctx.fillText('Curve A', legTX, DRAW_H + 33);
+
+      // Curve B
+      ctx.strokeStyle = COL_B;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([8, 5]);
+      ctx.beginPath(); ctx.moveTo(legX0, DRAW_H + 58); ctx.lineTo(legX1, DRAW_H + 58); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = COL_B;
+      ctx.fillText('Curve B', legTX, DRAW_H + 63);
+      ctx.restore();
     }
 
     // Render to the visible canvas
@@ -300,9 +332,9 @@
       renderAll(N);
     });
 
-    // High-resolution PNG (3x offscreen canvas)
+    // High-resolution PNG (5x offscreen canvas)
     function saveHiResPng(canvasId, filename) {
-      const SCALE = 3;
+      const SCALE = 5;
       const m   = MODES.find(x => x.id === canvasId);
       const off = document.createElement('canvas');
       off.width  = CW * SCALE;
@@ -354,7 +386,7 @@
       el.push(`  <circle cx="${f2(ahx)}" cy="${f2(ahy)}" r="6.5"/>`);
       el.push(`  <circle cx="${f2(bhx)}" cy="${f2(bhy)}" r="6.5"/>`);
       el.push(`</g>`);
-      el.push(`<text x="${lx}" y="${ly}" font-family="Georgia,serif" font-size="12" font-style="italic" fill="#004d57">p = i/N</text>`);
+      el.push(`<text x="${lx}" y="${ly}" font-family="Georgia,serif" font-size="26" font-style="italic" fill="#1b5e20" stroke="white" stroke-width="5" paint-order="stroke" stroke-linejoin="round">p = i/N</text>`);
 
       // Curve A path
       const dA = fullA.map(([x,y], i) => {
@@ -383,6 +415,15 @@
         return `  <circle cx="${f2(sx)}" cy="${f2(sy)}" r="6"/>`;
       });
       el.push(`<g fill="none" stroke="${COL_B}" stroke-width="2.5">\n${dotsB.join('\n')}\n</g>`);
+
+      // Legend strip below drawing area — never overlaps the figure
+      const legX0 = CW / 2 - 57;
+      const legX1 = legX0 + 40;
+      const legTX = legX1 + 8;
+      el.push(`<line x1="${legX0}" y1="${DRAW_H+28}" x2="${legX1}" y2="${DRAW_H+28}" stroke="${COL_A}" stroke-width="2.5"/>`);
+      el.push(`<text x="${legTX}" y="${DRAW_H+33}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${COL_A}">Curve A</text>`);
+      el.push(`<line x1="${legX0}" y1="${DRAW_H+58}" x2="${legX1}" y2="${DRAW_H+58}" stroke="${COL_B}" stroke-width="2.5" stroke-dasharray="8 5"/>`);
+      el.push(`<text x="${legTX}" y="${DRAW_H+63}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${COL_B}">Curve B</text>`);
 
       el.push(`</svg>`);
 

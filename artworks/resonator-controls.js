@@ -97,9 +97,9 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="0">
       <div class="resonator-section-header">Harmonic Phase</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">&theta; = 2&pi;pf + t</p>
-        <p class="resonator-formula">&phi; = 2&pi;p + 0.5t</p>
-        <p class="resonator-formula">x = R sin(&theta;) cos(k&phi;), y = R cos(m&theta;) sin(&phi;)</p>
+        <p class="resonator-formula">&theta;<sub>i</sub> = 2&pi;f&thinsp;u<sub>i</sub> + t, &nbsp; &phi;<sub>i</sub> = 2&pi;u<sub>i</sub> + t/2</p>
+        <p class="resonator-formula">x<sub>1</sub> = R sin(&theta;<sub>i</sub>) cos(m<sub>&phi;</sub> &phi;<sub>i</sub>)</p>
+        <p class="resonator-formula">y<sub>1</sub> = R cos(m<sub>&theta;</sub> &theta;<sub>i</sub>) sin(&phi;<sub>i</sub>), &nbsp; z<sub>1</sub> = R sin(&phi;<sub>i</sub> + &theta;<sub>i</sub>)</p>
       </div>
       <div class="resonator-grid-2">
         <div class="res-scrubber" data-min="0.25" data-max="16" data-step="0.05">
@@ -110,19 +110,19 @@ export function buildControls() {
         </div>
         <div class="res-scrubber" data-min="0.1" data-max="8" data-step="0.05">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">k</span>
+          <span class="res-scrubber-label">m<sub>&phi;</sub></span>
           <span class="res-scrubber-value">2.00</span>
           <input class="res-scrubber-input" data-resonator-key="harmonicPhiMultiplier" type="number" min="0.1" max="8" step="0.05" value="2" />
         </div>
         <div class="res-scrubber" data-min="0.1" data-max="8" data-step="0.05">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">m</span>
+          <span class="res-scrubber-label">m<sub>&theta;</sub></span>
           <span class="res-scrubber-value">1.50</span>
           <input class="res-scrubber-input" data-resonator-key="harmonicThetaMultiplier" type="number" min="0.1" max="8" step="0.05" value="1.5" />
         </div>
         <div class="res-scrubber" data-min="0.05" data-max="0.7" data-step="0.01">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">R scale</span>
+          <span class="res-scrubber-label">R</span>
           <span class="res-scrubber-value">0.35</span>
           <input class="res-scrubber-input" data-resonator-key="harmonicRadiusScale" type="number" min="0.05" max="0.7" step="0.01" value="0.35" />
         </div>
@@ -144,13 +144,14 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="1">
       <div class="resonator-section-header">Hypotrochoidal Evolution</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">x = (R-r) cos(t) + d cos(((R-r)/r)t)</p>
-        <p class="resonator-formula">y = (R-r) sin(t) - d sin(((R-r)/r)t)</p>
+        <p class="resonator-formula">&theta;<sub>i</sub> = 2&pi;&kappa;&thinsp;u<sub>i</sub>, &nbsp; t<sub>1</sub> = &theta;<sub>i</sub> + t</p>
+        <p class="resonator-formula">x = (R&minus;r) cos(t<sub>1</sub>) + d cos(((R&minus;r)/r) t<sub>1</sub>)</p>
+        <p class="resonator-formula">y = (R&minus;r) sin(t<sub>1</sub>) &minus; d sin(((R&minus;r)/r) t<sub>1</sub>)</p>
       </div>
       <div class="resonator-grid-3">
         <div class="res-scrubber" data-min="1" data-max="32" data-step="0.5">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">&theta;&times;</span>
+          <span class="res-scrubber-label">&kappa;</span>
           <span class="res-scrubber-value">12</span>
           <input class="res-scrubber-input" data-resonator-key="hypoThetaMultiplier" type="number" min="1" max="32" step="0.5" value="12" />
         </div>
@@ -198,7 +199,7 @@ export function buildControls() {
         </div>
         <div class="res-scrubber" data-min="0.05" data-max="0.6" data-step="0.01">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">R sc</span>
+          <span class="res-scrubber-label">size</span>
           <span class="res-scrubber-value">0.22</span>
           <input class="res-scrubber-input" data-resonator-key="hypotrochoidRadiusScale" type="number" min="0.05" max="0.6" step="0.01" value="0.22" />
         </div>
@@ -208,31 +209,32 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="2">
       <div class="resonator-section-header">Toroidal Knot</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">u&#x2081; = p&#x2081;&theta; + t, v&#x2081; = q&#x2081;&theta; - &lambda;t</p>
-        <p class="resonator-formula">x = (R + r cos(v)) cos(u), y = (R + r cos(v)) sin(u)</p>
+        <p class="resonator-formula">&psi;<sub>i</sub> = 2&pi;s<sub>i</sub>, &nbsp; u<sub>1</sub> = m<sub>1</sub>&psi;<sub>i</sub> + t, &nbsp; v<sub>1</sub> = n<sub>1</sub>&psi;<sub>i</sub> &minus; &alpha;t</p>
+        <p class="resonator-formula">x<sub>1</sub> = (R + r cos(v<sub>1</sub>)) cos(u<sub>1</sub>)</p>
+        <p class="resonator-formula">y<sub>1</sub> = (R + r cos(v<sub>1</sub>)) sin(u<sub>1</sub>), &nbsp; z<sub>1</sub> = r sin(v<sub>1</sub>)</p>
       </div>
       <div class="resonator-grid-3">
         <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">p&#x2081;</span>
+          <span class="res-scrubber-label">m<sub>1</sub></span>
           <span class="res-scrubber-value">3</span>
           <input class="res-scrubber-input" data-resonator-key="toroidalP1" type="number" min="1" max="12" step="1" value="3" />
         </div>
         <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">q&#x2081;</span>
+          <span class="res-scrubber-label">n<sub>1</sub></span>
           <span class="res-scrubber-value">2</span>
           <input class="res-scrubber-input" data-resonator-key="toroidalQ1" type="number" min="1" max="12" step="1" value="2" />
         </div>
         <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">p&#x2082;</span>
+          <span class="res-scrubber-label">m<sub>2</sub></span>
           <span class="res-scrubber-value">5</span>
           <input class="res-scrubber-input" data-resonator-key="toroidalP2" type="number" min="1" max="12" step="1" value="5" />
         </div>
         <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
           <div class="res-scrubber-fill"></div>
-          <span class="res-scrubber-label">q&#x2082;</span>
+          <span class="res-scrubber-label">n<sub>2</sub></span>
           <span class="res-scrubber-value">4</span>
           <input class="res-scrubber-input" data-resonator-key="toroidalQ2" type="number" min="1" max="12" step="1" value="4" />
         </div>
