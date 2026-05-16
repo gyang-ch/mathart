@@ -97,9 +97,12 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="0">
       <div class="resonator-section-header">Harmonic Phase</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">&theta;<sub>i</sub> = 2&pi;f&thinsp;u<sub>i</sub> + t, &nbsp; &phi;<sub>i</sub> = 2&pi;u<sub>i</sub> + t/2</p>
-        <p class="resonator-formula">x<sub>1</sub> = R sin(&theta;<sub>i</sub>) cos(m<sub>&phi;</sub> &phi;<sub>i</sub>)</p>
-        <p class="resonator-formula">y<sub>1</sub> = R cos(m<sub>&theta;</sub> &theta;<sub>i</sub>) sin(&phi;<sub>i</sub>), &nbsp; z<sub>1</sub> = R sin(&phi;<sub>i</sub> + &theta;<sub>i</sub>)</p>
+        <div class="resonator-formula">\\[ \\theta_i = 2\\pi f\\, u_i + t, \\quad \\phi_i = 2\\pi u_i + \\tfrac{t}{2} \\]</div>
+        <div class="resonator-formula">\\[ \\begin{aligned}
+          x_1 &= R\\sin(\\theta_i)\\cos(m_\\phi\\,\\phi_i) \\\\
+          y_1 &= R\\cos(m_\\theta\\,\\theta_i)\\sin(\\phi_i) \\\\
+          z_1 &= R\\sin(\\phi_i + \\theta_i)
+        \\end{aligned} \\]</div>
       </div>
       <div class="resonator-grid-2">
         <div class="res-scrubber" data-min="0.25" data-max="16" data-step="0.05">
@@ -144,9 +147,11 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="1">
       <div class="resonator-section-header">Hypotrochoidal Evolution</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">&theta;<sub>i</sub> = 2&pi;&kappa;&thinsp;u<sub>i</sub>, &nbsp; t<sub>1</sub> = &theta;<sub>i</sub> + t</p>
-        <p class="resonator-formula">x = (R&minus;r) cos(t<sub>1</sub>) + d cos(((R&minus;r)/r) t<sub>1</sub>)</p>
-        <p class="resonator-formula">y = (R&minus;r) sin(t<sub>1</sub>) &minus; d sin(((R&minus;r)/r) t<sub>1</sub>)</p>
+        <div class="resonator-formula">\\[ \\theta_i = 2\\pi\\kappa\\, u_i, \\quad t_1 = \\theta_i + t \\]</div>
+        <div class="resonator-formula">\\[ \\begin{aligned}
+          x &= (R-r)\\cos(t_1) + d\\cos\\!\\left(\\tfrac{R-r}{r}\\,t_1\\right) \\\\
+          y &= (R-r)\\sin(t_1) - d\\sin\\!\\left(\\tfrac{R-r}{r}\\,t_1\\right)
+        \\end{aligned} \\]</div>
       </div>
       <div class="resonator-grid-3">
         <div class="res-scrubber" data-min="1" data-max="32" data-step="0.5">
@@ -209,9 +214,12 @@ export function buildControls() {
     <div class="resonator-section-toggle" data-curve-section="2">
       <div class="resonator-section-header">Toroidal Knot</div>
       <div class="resonator-formula-card">
-        <p class="resonator-formula">&psi;<sub>i</sub> = 2&pi;s<sub>i</sub>, &nbsp; u<sub>1</sub> = m<sub>1</sub>&psi;<sub>i</sub> + t, &nbsp; v<sub>1</sub> = n<sub>1</sub>&psi;<sub>i</sub> &minus; &alpha;t</p>
-        <p class="resonator-formula">x<sub>1</sub> = (R + r cos(v<sub>1</sub>)) cos(u<sub>1</sub>)</p>
-        <p class="resonator-formula">y<sub>1</sub> = (R + r cos(v<sub>1</sub>)) sin(u<sub>1</sub>), &nbsp; z<sub>1</sub> = r sin(v<sub>1</sub>)</p>
+        <div class="resonator-formula">\\[ \\psi_i = 2\\pi s_i, \\quad u_1 = m_1\\psi_i + t, \\quad v_1 = n_1\\psi_i - \\alpha t \\]</div>
+        <div class="resonator-formula">\\[ \\begin{aligned}
+          x_1 &= (R + r\\cos v_1)\\cos u_1 \\\\
+          y_1 &= (R + r\\cos v_1)\\sin u_1 \\\\
+          z_1 &= r\\sin v_1
+        \\end{aligned} \\]</div>
       </div>
       <div class="resonator-grid-3">
         <div class="res-scrubber" data-min="1" data-max="12" data-step="1">
@@ -274,7 +282,31 @@ export function buildControls() {
 
   initScrubbers(panel);
   _wireControls();
+  _renderFormulas();
   return panel;
+}
+
+function _renderFormulas() {
+  if (!panel || typeof window === "undefined") return;
+  const run = () => {
+    if (typeof window.renderMathInElement !== "function") return false;
+    window.renderMathInElement(panel, {
+      delimiters: [
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false
+    });
+    return true;
+  };
+  if (run()) return;
+  const start = Date.now();
+  const tick = () => {
+    if (run()) return;
+    if (Date.now() - start > 4000) return;
+    setTimeout(tick, 60);
+  };
+  tick();
 }
 
 function _playButtonShine(btn, event) {
