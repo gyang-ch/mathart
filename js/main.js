@@ -35,7 +35,7 @@ function changeMode(newMode) {
     updateCaption("", "");
   } else if (mode === 1) {
     initResonator();
-    updateCaption("1. Resonator.", "<b>Interact:</b> Mouse distance controls amplitude; click inverts rotation.");
+    updateCaption("1. Resonator.", "Resonator: Dynamic 3D Oscilloscope-Inspired Art");
   } else if (mode === 2) {
     background(8);
     initMorphogenesis();
