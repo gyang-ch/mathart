@@ -79,7 +79,7 @@
 
   <header>
     <h1>Figure 2. Line Bundle Construction</h1>
-    <p>For each index <em>i</em> = 0, &hellip;, <em>N</em>&minus;1, a shared parameter <em>p</em> = <em>i</em>/<em>N</em> is
+    <p>For each index <em>i</em> = 0, &hellip;, <em>N</em>&minus;1, a shared parameter <em>u<sub>i</sub></em> = <em>i</em>/<em>N</em> is
        evaluated on both Curve A and Curve B; the paired samples are connected by a segment to form the line field.</p>
     <div class="controls">
       <label for="nSlider">N (segments):</label>
@@ -177,8 +177,11 @@
       return ([x,y]) => [ox + x*sc, oy + y*sc];
     }
 
-    // Core drawing — works on any Canvas 2D context (display or offscreen)
-    function drawToCtx(ctx, fA, fB, N) {
+    // Core drawing — works on any Canvas 2D context (display or offscreen).
+    // dashB is the [dash, gap] pattern for Curve B, tuned per figure because
+    // densely self-intersecting curves (2b/2c) need much longer dashes than
+    // the harmonic curve (2a) to keep gaps visually open.
+    function drawToCtx(ctx, fA, fB, N, dashB) {
       const fullA = linspace(fA, 1200);
       const fullB = linspace(fB, 1200);
       const sA    = sampleN(fA, N);
@@ -216,15 +219,22 @@
         ctx.fillStyle = COL_HL;
         ctx.beginPath(); ctx.arc(ax, ay, 6.5, 0, TAU); ctx.fill();
         ctx.beginPath(); ctx.arc(bx, by, 6.5, 0, TAU); ctx.fill();
-        ctx.font = 'italic 26px Georgia, serif';
         ctx.textAlign = 'left';
         ctx.lineJoin = 'round';
-        const tlx = (ax+bx)/2 + 10, tly = (ay+by)/2 - 6;
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'white';
-        ctx.strokeText('p = i / N', tlx, tly);
         ctx.fillStyle = '#1b5e20';
-        ctx.fillText('p = i / N', tlx, tly);
+        const tlx = (ax+bx)/2 + 10, tly = (ay+by)/2 - 6;
+        const drawPiece = (txt, x, y, size) => {
+          ctx.font = `italic ${size}px Georgia, serif`;
+          ctx.strokeText(txt, x, y);
+          ctx.fillText(txt, x, y);
+          return ctx.measureText(txt).width;
+        };
+        let cx = tlx;
+        cx += drawPiece('u', cx, tly, 26);
+        cx += drawPiece('i', cx, tly + 7, 18);
+        cx += drawPiece(' = i / N', cx, tly, 26);
         ctx.restore();
       }
 
@@ -249,7 +259,7 @@
       ctx.globalAlpha = 0.45;
       ctx.strokeStyle = COL_B;
       ctx.lineWidth = 1.3;
-      ctx.setLineDash([8, 5]);
+      ctx.setLineDash(dashB);
       ctx.beginPath();
       [qx, qy] = proj(fullB[0]);
       ctx.moveTo(qx, qy);
@@ -297,7 +307,7 @@
       // Curve B
       ctx.strokeStyle = COL_B;
       ctx.lineWidth = 2.5;
-      ctx.setLineDash([8, 5]);
+      ctx.setLineDash([14, 10]);
       ctx.beginPath(); ctx.moveTo(legX0, DRAW_H + 58); ctx.lineTo(legX1, DRAW_H + 58); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = COL_B;
@@ -306,19 +316,22 @@
     }
 
     // Render to the visible canvas
-    function renderPanel(canvasId, fA, fB, N) {
-      drawToCtx(document.getElementById(canvasId).getContext('2d'), fA, fB, N);
+    function renderPanel(canvasId, fA, fB, N, dashB) {
+      drawToCtx(document.getElementById(canvasId).getContext('2d'), fA, fB, N, dashB);
     }
 
-    // Mode definitions
+    // Mode definitions. dashB is hand-tuned per figure: harmonic (2a) reads as
+    // dashed with a small pattern; hypotrochoidal (2b) and the toroidal knot
+    // (2c) self-cross densely, so they need much longer dashes for the gaps
+    // to survive visual overlap.
     const MODES = [
-      { id:'fig-a', fA:harmonicA, fB:harmonicB, name:'figure2a-harmonic-phase' },
-      { id:'fig-b', fA:hypoA,     fB:hypoB,     name:'figure2b-hypotrochoidal' },
-      { id:'fig-c', fA:toroA,     fB:toroB,     name:'figure2c-toroidal-knot'  },
+      { id:'fig-a', fA:harmonicA, fB:harmonicB, dashB:[14, 15.8], name:'figure2a-harmonic-phase' },
+      { id:'fig-b', fA:hypoA,     fB:hypoB,     dashB:[14, 17], name:'figure2b-hypotrochoidal' },
+      { id:'fig-c', fA:toroA,     fB:toroB,     dashB:[14, 8],   name:'figure2c-toroidal-knot'  },
     ];
 
     function renderAll(N) {
-      for (const m of MODES) renderPanel(m.id, m.fA, m.fB, N);
+      for (const m of MODES) renderPanel(m.id, m.fA, m.fB, N, m.dashB);
     }
 
     // Controls
@@ -341,7 +354,7 @@
       off.height = CH * SCALE;
       const ctx  = off.getContext('2d');
       ctx.scale(SCALE, SCALE);
-      drawToCtx(ctx, m.fA, m.fB, N);
+      drawToCtx(ctx, m.fA, m.fB, N, m.dashB);
       const a = document.createElement('a');
       a.download = filename + '.png';
       a.href = off.toDataURL('image/png');
@@ -386,7 +399,7 @@
       el.push(`  <circle cx="${f2(ahx)}" cy="${f2(ahy)}" r="6.5"/>`);
       el.push(`  <circle cx="${f2(bhx)}" cy="${f2(bhy)}" r="6.5"/>`);
       el.push(`</g>`);
-      el.push(`<text x="${lx}" y="${ly}" font-family="Georgia,serif" font-size="26" font-style="italic" fill="#1b5e20" stroke="white" stroke-width="5" paint-order="stroke" stroke-linejoin="round">p = i/N</text>`);
+      el.push(`<text x="${lx}" y="${ly}" font-family="Georgia,serif" font-size="26" font-style="italic" fill="#1b5e20" stroke="white" stroke-width="5" paint-order="stroke" stroke-linejoin="round">u<tspan font-size="18" dy="7">i</tspan><tspan dy="-7"> = i/N</tspan></text>`);
 
       // Curve A path
       const dA = fullA.map(([x,y], i) => {
@@ -395,12 +408,12 @@
       }).join(' ');
       el.push(`<path d="${dA}" fill="none" stroke="${COL_A}" stroke-width="1.3" opacity="0.45"/>`);
 
-      // Curve B path (dashed)
+      // Curve B path (dashed — per-figure pattern from MODES)
       const dB = fullB.map(([x,y], i) => {
         const [px, py] = proj([x, y]);
         return (i === 0 ? `M ${f2(px)} ${f2(py)}` : `L ${f2(px)} ${f2(py)}`);
       }).join(' ');
-      el.push(`<path d="${dB}" fill="none" stroke="${COL_B}" stroke-width="1.3" stroke-dasharray="8 5" opacity="0.45"/>`);
+      el.push(`<path d="${dB}" fill="none" stroke="${COL_B}" stroke-width="1.3" stroke-dasharray="${m.dashB.join(' ')}" opacity="0.45"/>`);
 
       // Sample dots A
       const dotsA = sA.map(pt => {
@@ -422,7 +435,7 @@
       const legTX = legX1 + 8;
       el.push(`<line x1="${legX0}" y1="${DRAW_H+28}" x2="${legX1}" y2="${DRAW_H+28}" stroke="${COL_A}" stroke-width="2.5"/>`);
       el.push(`<text x="${legTX}" y="${DRAW_H+33}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${COL_A}">Curve A</text>`);
-      el.push(`<line x1="${legX0}" y1="${DRAW_H+58}" x2="${legX1}" y2="${DRAW_H+58}" stroke="${COL_B}" stroke-width="2.5" stroke-dasharray="8 5"/>`);
+      el.push(`<line x1="${legX0}" y1="${DRAW_H+58}" x2="${legX1}" y2="${DRAW_H+58}" stroke="${COL_B}" stroke-width="2.5" stroke-dasharray="14 10"/>`);
       el.push(`<text x="${legTX}" y="${DRAW_H+63}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${COL_B}">Curve B</text>`);
 
       el.push(`</svg>`);
