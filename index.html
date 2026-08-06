@@ -1,92 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resonator</title>
-  <link rel="icon" type="image/png" href="logo.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resonator</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="styles.css" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-</head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    ></script>
+  </head>
 
-<body>
-  <div class="grain"></div>
-  <div class="frame-lines"></div>
-  <div id="transition-glow"></div>
+  <body>
+    <div class="grain"></div>
+    <div class="frame-lines"></div>
+    <div id="transition-glow"></div>
 
-  <div id="canvas-container"></div>
+    <div id="canvas-container"></div>
 
-  <!-- Top-right text card -->
-  <div id="info-panel">
-    <div id="caption"></div>
-  </div>
+    <!-- Progressive-enhancement fallback: the artworks themselves are canvas/GLSL
+       and require JS, but visitors and crawlers without JS should still see
+       real content instead of a blank page. Keep this in sync with the
+       data-label/data-meta values on the sections below. -->
+    <noscript>
+      <div class="noscript-fallback">
+        <h1>Mathematical Art Experiments</h1>
+        <p class="artist-credit">Guang Yang</p>
+        <p>
+          This site is a collection of interactive, JavaScript-driven generative art pieces
+          exploring mathematical surfaces and curves. Please enable JavaScript to view and interact
+          with them:
+        </p>
+        <ol>
+          <li><strong>Resonator</strong> — Resonator: Dynamic 3D Oscilloscope-Inspired Art</li>
+          <li>
+            <strong>Morphogenesis</strong> — GLSL ray-marched surface; mouse rotates, click cycles
+            palette
+          </li>
+          <li><strong>Fractal</strong> — Recursive 3D fractal; luminous depth lattice</li>
+          <li><strong>Rose</strong> — Polar geometry; mouse mapped</li>
+          <li><strong>Dupin</strong> — 3D Cyclide surface; X morphs shape, Y tilts</li>
+        </ol>
+      </div>
+    </noscript>
 
-  <!-- Left-side section navigator -->
-  <nav id="progress-nav" class="integrated-nav" aria-label="Artwork sections">
-    <div class="nav-track" aria-hidden="true">
-      <div class="nav-indicator"></div>
+    <!-- Top-right text card -->
+    <div id="info-panel">
+      <div id="caption"></div>
     </div>
-    <ul class="nav-labels">
-      <li>
-        <a href="#s1" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">1. Resonator</div>
-        </a>
-      </li>
-      <li>
-        <a href="#s2" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">2. Morphogenesis</div>
-        </a>
-      </li>
-      <li>
-        <a href="#s3" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">3. Fractal</div>
-        </a>
-      </li>
-      <li>
-        <a href="#s4" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">4. Rose</div>
-        </a>
-      </li>
-      <li>
-        <a href="#s5" class="glow-nav-btn">
-          <div class="glow-bg"></div>
-          <div class="glow-btn-content">5. Dupin</div>
-        </a>
-      </li>
-    </ul>
-  </nav>
 
-  <!-- front page -->
-  <section class="active" id="intro">
-    <div class="panel intro-panel">
-      <h1 id="intro-title">Mathematical Art<br>Experiments</h1>
-      <p class="artist-credit">Guang Yang</p>
-      <div class="tech-note"><span class="down-arrows" aria-hidden="true">↓</span> Scroll to initialise <span class="down-arrows" aria-hidden="true">↓</span></div>
-    </div>
-  </section>
+    <!-- Left-side section navigator -->
+    <nav id="progress-nav" class="integrated-nav" aria-label="Artwork sections">
+      <div class="nav-track" aria-hidden="true">
+        <div class="nav-indicator"></div>
+      </div>
+      <ul class="nav-labels">
+        <li>
+          <a href="#s1" class="glow-nav-btn">
+            <div class="glow-bg"></div>
+            <div class="glow-btn-content">1. Resonator</div>
+          </a>
+        </li>
+        <li>
+          <a href="#s2" class="glow-nav-btn">
+            <div class="glow-bg"></div>
+            <div class="glow-btn-content">2. Morphogenesis</div>
+          </a>
+        </li>
+        <li>
+          <a href="#s3" class="glow-nav-btn">
+            <div class="glow-bg"></div>
+            <div class="glow-btn-content">3. Fractal</div>
+          </a>
+        </li>
+        <li>
+          <a href="#s4" class="glow-nav-btn">
+            <div class="glow-bg"></div>
+            <div class="glow-btn-content">4. Rose</div>
+          </a>
+        </li>
+        <li>
+          <a href="#s5" class="glow-nav-btn">
+            <div class="glow-bg"></div>
+            <div class="glow-btn-content">5. Dupin</div>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-  <!-- Scroll sections: each data-mode maps to one artwork in main.js -->
-  <section id="s1" data-mode="1" data-label="1. Resonator" data-meta="Resonator: Dynamic 3D Oscilloscope-Inspired Art"></section>
-  <section id="s2" data-mode="2" data-label="2. Morphogenesis" data-meta="GLSL ray-marched surface • mouse rotates, click cycles palette"></section>
-  <section id="s3" data-mode="3" data-label="3. Fractal" data-meta="Recursive 3D fractal • luminous depth lattice"></section>
-  <section id="s4" data-mode="4" data-label="4. Rose" data-meta="Polar geometry • mouse mapped"></section>
-  <section id="s5" data-mode="5" data-label="5. Dupin" data-meta="3D Cyclide surface • X morphs shape, Y tilts"></section>
+    <!-- front page -->
+    <section class="active" id="intro">
+      <div class="panel intro-panel">
+        <h1 id="intro-title">Mathematical Art<br />Experiments</h1>
+        <p class="artist-credit">Guang Yang</p>
+        <div class="tech-note">
+          <span class="down-arrows" aria-hidden="true">↓</span> Scroll to initialise
+          <span class="down-arrows" aria-hidden="true">↓</span>
+        </div>
+      </div>
+    </section>
 
-  <!-- Control panels are built and mounted by each artwork's controls module -->
+    <!-- Scroll sections: each data-mode maps to one artwork in main.js -->
+    <section
+      id="s1"
+      data-mode="1"
+      data-label="1. Resonator"
+      data-meta="Resonator: Dynamic 3D Oscilloscope-Inspired Art"
+    ></section>
+    <section
+      id="s2"
+      data-mode="2"
+      data-label="2. Morphogenesis"
+      data-meta="GLSL ray-marched surface • mouse rotates, click cycles palette"
+    ></section>
+    <section
+      id="s3"
+      data-mode="3"
+      data-label="3. Fractal"
+      data-meta="Recursive 3D fractal • luminous depth lattice"
+    ></section>
+    <section
+      id="s4"
+      data-mode="4"
+      data-label="4. Rose"
+      data-meta="Polar geometry • mouse mapped"
+    ></section>
+    <section
+      id="s5"
+      data-mode="5"
+      data-label="5. Dupin"
+      data-meta="3D Cyclide surface • X morphs shape, Y tilts"
+    ></section>
 
-  <script type="module" src="js/main.js"></script>
-  <script defer src="/_vercel/insights/script.js"></script>
-</body>
+    <!-- Control panels are built and mounted by each artwork's controls module -->
+
+    <script type="module" src="js/main.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
 </html>

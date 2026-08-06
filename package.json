@@ -1,0 +1,26 @@
+{
+  "name": "mathart",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Mathematical Art Experiments — interactive p5.js/GLSL sketches",
+  "scripts": {
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gyang-ch/mathart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gyang-ch/mathart/issues"
+  },
+  "homepage": "https://github.com/gyang-ch/mathart#readme",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.9.6"
+  },
+  "lint-staged": {
+    "*.{js,css,html,json,md}": "prettier --write"
+  }
+}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap");
 
 :root {
   --bg: #080808;
@@ -29,6 +29,21 @@ body {
   overflow-x: hidden;
 }
 
+.noscript-fallback {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  line-height: 1.6;
+}
+
+.noscript-fallback ol {
+  padding-left: 1.25rem;
+}
+
+.noscript-fallback li {
+  margin-bottom: 0.5rem;
+}
+
 .grain {
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
   inset: 0;
@@ -39,7 +54,7 @@ body {
 }
 
 .frame-lines {
-  border: 1px solid rgba(255,255,255,0.025);
+  border: 1px solid rgba(255, 255, 255, 0.025);
   inset: 0;
   margin: 20px;
   pointer-events: none;
@@ -59,7 +74,9 @@ body {
 }
 
 #transition-glow {
-  background: radial-gradient(circle at 60% 30%, rgba(0, 219, 255, 0.26), rgba(0, 0, 0, 0) 40%), radial-gradient(circle at 30% 70%, rgba(255, 52, 139, 0.24), rgba(0, 0, 0, 0) 45%);
+  background:
+    radial-gradient(circle at 60% 30%, rgba(0, 219, 255, 0.26), rgba(0, 0, 0, 0) 40%),
+    radial-gradient(circle at 30% 70%, rgba(255, 52, 139, 0.24), rgba(0, 0, 0, 0) 45%);
   inset: 0;
   mix-blend-mode: screen;
   opacity: 0;
@@ -86,7 +103,10 @@ section {
   pointer-events: auto;
   transform: translate3d(-36px, 0, 0);
   will-change: transform, opacity, filter;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease, filter 0.8s ease;
+  transition:
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.8s ease,
+    filter 0.8s ease;
 }
 
 .panel:hover {
@@ -207,7 +227,7 @@ p {
 .tech-note {
   align-items: center;
   animation: techNoteFloat 1.6s ease-in-out infinite alternate;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: inline-flex;
   font-family: var(--display);
   font-size: 0.75rem;
@@ -239,7 +259,8 @@ p {
 }
 
 @keyframes arrowPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: translateY(0px);
   }
@@ -278,7 +299,9 @@ p {
 #progress-nav .nav-indicator {
   background: linear-gradient(180deg, #9fefff 0%, #ffffff 48%, #f0bcff 100%);
   border-radius: 999px;
-  box-shadow: 0 0 10px rgba(159, 239, 255, 0.75), 0 0 20px rgba(240, 188, 255, 0.35);
+  box-shadow:
+    0 0 10px rgba(159, 239, 255, 0.75),
+    0 0 20px rgba(240, 188, 255, 0.35);
   height: 0%;
   left: 0;
   position: absolute;
@@ -361,11 +384,7 @@ p {
   gap: 8px;
   border-radius: 8px;
   border: 1px solid rgba(96, 165, 250, 0.55);
-  background: linear-gradient(
-    135deg,
-    rgba(30, 58, 138, 0.42) 0%,
-    rgba(37, 99, 235, 0.28) 100%
-  );
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.42) 0%, rgba(37, 99, 235, 0.28) 100%);
   backdrop-filter: blur(10px) saturate(135%);
   -webkit-backdrop-filter: blur(10px) saturate(135%);
   padding: 9px 15px;
@@ -384,11 +403,7 @@ p {
 }
 
 #progress-nav .nav-labels a:hover .glow-btn-content {
-  background: linear-gradient(
-    135deg,
-    rgba(30, 58, 138, 0.48) 0%,
-    rgba(37, 99, 235, 0.32) 100%
-  );
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.48) 0%, rgba(37, 99, 235, 0.32) 100%);
   border-color: rgba(96, 165, 250, 0.68);
   color: rgba(255, 255, 255, 0.98);
 }
@@ -401,7 +416,10 @@ p {
 #progress-nav .nav-labels a.active .glow-btn-content {
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.75) 0%, rgba(8, 145, 178, 0.6) 100%);
   border-color: rgba(59, 130, 246, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px rgba(15, 23, 42, 0.4), 0 0 18px rgba(59, 130, 246, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 24px rgba(15, 23, 42, 0.4),
+    0 0 18px rgba(59, 130, 246, 0.3);
   color: #fff;
   text-shadow: 0 0 10px rgba(200, 240, 255, 0.85);
 }
@@ -412,13 +430,15 @@ p {
 }
 
 .nav-sheen {
-  background: linear-gradient(110deg,
+  background: linear-gradient(
+    110deg,
     rgba(255, 132, 224, 0) 0%,
     rgba(255, 132, 224, 0.12) 24%,
     rgba(255, 232, 247, 0.5) 46%,
     rgba(255, 168, 233, 0.4) 56%,
     rgba(255, 132, 224, 0.24) 68%,
-    rgba(255, 132, 224, 0) 100%);
+    rgba(255, 132, 224, 0) 100%
+  );
   height: 180%;
   left: -44%;
   mix-blend-mode: normal;
@@ -450,13 +470,15 @@ body.light-artwork #progress-nav .nav-labels a .glow-btn-content {
 }
 
 body.light-artwork .nav-sheen {
-  background: linear-gradient(110deg,
+  background: linear-gradient(
+    110deg,
     rgba(255, 122, 220, 0) 0%,
     rgba(255, 122, 220, 0.14) 24%,
     rgba(255, 238, 249, 0.55) 46%,
     rgba(255, 170, 234, 0.44) 56%,
     rgba(255, 122, 220, 0.26) 68%,
-    rgba(255, 122, 220, 0) 100%);
+    rgba(255, 122, 220, 0) 100%
+  );
 }
 
 body.light-artwork #progress-nav .nav-labels a.reached .glow-btn-content {
@@ -466,16 +488,26 @@ body.light-artwork #progress-nav .nav-labels a.reached .glow-btn-content {
 
 body.light-artwork #progress-nav .nav-labels a:hover .glow-btn-content {
   border-color: rgba(189, 230, 255, 0.8);
-  box-shadow: 0 8px 18px rgba(150, 232, 255, 0.32), 0 12px 24px rgba(237, 170, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 0 1px rgba(163, 226, 255, 0.24);
+  box-shadow:
+    0 8px 18px rgba(150, 232, 255, 0.32),
+    0 12px 24px rgba(237, 170, 255, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(163, 226, 255, 0.24);
   color: #fff;
 }
 
 body.light-artwork #progress-nav .nav-labels a.active .glow-btn-content {
   background: linear-gradient(165deg, rgba(24, 50, 74, 0.92), rgba(10, 22, 36, 0.9));
   border-color: rgba(166, 234, 255, 0.88);
-  box-shadow: 0 0 0 1px rgba(166, 234, 255, 0.35), 0 8px 18px rgba(149, 232, 255, 0.32), 0 12px 24px rgba(238, 176, 255, 0.24), 0 0 20px rgba(166, 234, 255, 0.26);
+  box-shadow:
+    0 0 0 1px rgba(166, 234, 255, 0.35),
+    0 8px 18px rgba(149, 232, 255, 0.32),
+    0 12px 24px rgba(238, 176, 255, 0.24),
+    0 0 20px rgba(166, 234, 255, 0.26);
   color: #fff;
-  text-shadow: 0 0 12px rgba(184, 230, 255, 0.82), 0 2px 12px rgba(0, 0, 0, 0.62);
+  text-shadow:
+    0 0 12px rgba(184, 230, 255, 0.82),
+    0 2px 12px rgba(0, 0, 0, 0.62);
 }
 
 #info-panel {
@@ -484,7 +516,9 @@ body.light-artwork #progress-nav .nav-labels a.active .glow-btn-content {
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   border: 1px solid rgba(96, 165, 250, 0.25);
   border-radius: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 24px rgba(15, 23, 42, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 8px 24px rgba(15, 23, 42, 0.25);
   color: rgba(232, 236, 240, 0.82);
   display: none;
   font-family: var(--display);
@@ -501,7 +535,10 @@ body.light-artwork #progress-nav .nav-labels a.active .glow-btn-content {
   width: fit-content;
   will-change: transform, opacity;
   z-index: 100;
-  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease;
 }
 
 body.light-artwork #info-panel {
@@ -515,7 +552,9 @@ body.light-artwork #info-panel {
   -webkit-backdrop-filter: blur(10px) saturate(135%);
   border: 1px solid rgba(96, 165, 250, 0.55);
   border-radius: 8px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px rgba(15, 23, 42, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 24px rgba(15, 23, 42, 0.28);
   color: rgba(238, 251, 255, 0.98);
   cursor: pointer;
   font-family: var(--mono);
@@ -531,13 +570,20 @@ body.light-artwork #info-panel {
   text-transform: uppercase;
   top: 50%;
   transform: translateY(-50%);
-  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), background var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
+  transition:
+    opacity var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    background var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
   width: 230px;
   z-index: 170;
 }
 
 .regenerate-btn.visible {
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42), inset 0 0 0 1px rgba(170, 245, 255, 0.24);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 1px rgba(170, 245, 255, 0.24);
   opacity: 1;
   pointer-events: auto;
   transform: translateY(-50%);
@@ -546,12 +592,14 @@ body.light-artwork #info-panel {
 .regenerate-btn:hover {
   background: linear-gradient(135deg, rgba(30, 58, 138, 0.55) 0%, rgba(37, 99, 235, 0.4) 100%);
   border-color: rgba(96, 165, 250, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 10px 28px rgba(15, 23, 42, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 28px rgba(15, 23, 42, 0.4);
   transform: translateY(-50%) scale(1.02);
 }
 
-
-#progress-nav .nav-labels a:focus-visible, .regenerate-btn:focus-visible {
+#progress-nav .nav-labels a:focus-visible,
+.regenerate-btn:focus-visible {
   box-shadow: 0 0 0 3px rgba(2, 8, 12, 0.72);
   outline: 2px solid rgba(127, 232, 255, 0.95);
   outline-offset: 2px;
@@ -569,7 +617,6 @@ body.light-artwork #info-panel {
   outline-offset: 2px;
 }
 
-
 #resonator-controls,
 #morphogenesis-controls,
 #fractal-controls,
@@ -577,12 +624,20 @@ body.light-artwork #info-panel {
 #dupin-controls {
   background:
     linear-gradient(160deg, rgba(16, 19, 30, 0.94) 0%, rgba(12, 15, 24, 0.97) 100%) padding-box,
-    linear-gradient(135deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.09) 100%) border-box;
+    linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        rgba(255, 255, 255, 0.09) 100%
+      )
+      border-box;
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid transparent;
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    0 2px 8px rgba(0, 0, 0, 0.35);
   color: #c8d4f0;
   opacity: 0;
   padding: 14px 12px 12px;
@@ -591,7 +646,9 @@ body.light-artwork #info-panel {
   right: 12px;
   top: calc(50% + 56px);
   transform: translateY(-50%);
-  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
+  transition:
+    opacity var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
   width: 240px;
   z-index: 170;
 }
@@ -718,7 +775,10 @@ body.light-artwork #info-panel {
   border-radius: 50%;
   border: 1.5px solid #464f66;
   background: transparent;
-  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .resonator-curve-option input[type="radio"]:checked + .resonator-curve-dot {
@@ -765,7 +825,7 @@ body.light-artwork #info-panel {
   background: #1c2035;
   border: none;
   border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   color: #7e8aa6;
   cursor: pointer;
   font-family: var(--mono);
@@ -778,17 +838,33 @@ body.light-artwork #info-panel {
   position: relative;
   text-align: center;
   text-transform: uppercase;
-  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
   width: 100%;
 }
 
 .resonator-curve-btn-shine {
   background:
-    radial-gradient(circle at 34% 30%, rgba(244, 253, 255, 0.72) 0%, rgba(196, 244, 255, 0.56) 24%, rgba(128, 228, 255, 0.22) 52%, rgba(128, 228, 255, 0) 74%),
-    linear-gradient(120deg, rgba(255, 255, 255, 0.3) 0%, rgba(232, 250, 255, 0.09) 42%, rgba(232, 250, 255, 0) 72%);
+    radial-gradient(
+      circle at 34% 30%,
+      rgba(244, 253, 255, 0.72) 0%,
+      rgba(196, 244, 255, 0.56) 24%,
+      rgba(128, 228, 255, 0.22) 52%,
+      rgba(128, 228, 255, 0) 74%
+    ),
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(232, 250, 255, 0.09) 42%,
+      rgba(232, 250, 255, 0) 72%
+    );
   border: 1px solid rgba(216, 248, 255, 0.32);
   border-radius: 999px;
-  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.16), 0 0 14px rgba(124, 228, 255, 0.24);
+  box-shadow:
+    inset 0 0 8px rgba(255, 255, 255, 0.16),
+    0 0 14px rgba(124, 228, 255, 0.24);
   filter: blur(0.4px);
   height: 30px;
   left: 50%;
@@ -912,7 +988,7 @@ body.light-artwork #info-panel {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.10em;
+  letter-spacing: 0.1em;
   padding: 8px 0;
   text-transform: uppercase;
 }
@@ -959,7 +1035,8 @@ body.light-artwork #info-panel {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tech-note, .tech-note .down-arrows {
+  .tech-note,
+  .tech-note .down-arrows {
     animation: none;
   }
 
@@ -1002,7 +1079,9 @@ body.light-artwork .artist-credit {
   overflow: hidden;
   user-select: none;
   touch-action: none;
-  transition: background 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    background 0.12s ease,
+    box-shadow 0.12s ease;
   box-sizing: border-box;
 }
 
@@ -1027,7 +1106,7 @@ body.light-artwork .artist-credit {
 }
 
 .res-scrubber-fill::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 3px;
@@ -1035,7 +1114,7 @@ body.light-artwork .artist-credit {
   width: 1.5px;
   border-radius: 1px;
   background: #6ab8ff;
-  box-shadow: 0 0 4px rgba(106, 184, 255, 0.70);
+  box-shadow: 0 0 4px rgba(106, 184, 255, 0.7);
 }
 
 .res-scrubber-label {
@@ -1074,7 +1153,7 @@ body.light-artwork .artist-credit {
   height: 100%;
   background: #252b3c;
   border: none;
-  box-shadow: inset 0 0 0 1px rgba(106, 184, 255, 0.50);
+  box-shadow: inset 0 0 0 1px rgba(106, 184, 255, 0.5);
   border-radius: 4px;
   text-align: center;
   font-family: var(--mono);
@@ -1115,7 +1194,8 @@ body.light-artwork .artist-credit {
     padding: 0 1.25rem;
   }
 
-  .panel, section:nth-of-type(even) .panel {
+  .panel,
+  section:nth-of-type(even) .panel {
     grid-column: 1 / -1;
   }
 
@@ -1170,12 +1250,11 @@ body.light-artwork .artist-credit {
     letter-spacing: 0.06em;
     padding: 8px 9px;
   }
-  
+
   #progress-nav .nav-labels a {
     margin-right: 4px;
   }
 }
-
 
 .intro-panel {
   perspective: 1000px;

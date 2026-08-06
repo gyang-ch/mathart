@@ -1,19 +1,38 @@
-import { initResonator, drawResonator, invertResonatorRotation } from '../artworks/resonator.js';
-import { initMorphogenesis, drawMorphogenesis, cycleMorphoPalette } from '../artworks/morphogenesis.js';
-import { initFractal, drawFractal } from '../artworks/fractal.js';
-import { drawMaurerRose } from '../artworks/rose.js';
-import { initDupin, drawDupin } from '../artworks/dupin.js';
+import { initResonator, drawResonator, invertResonatorRotation } from "../artworks/resonator.js";
+import {
+  initMorphogenesis,
+  drawMorphogenesis,
+  cycleMorphoPalette,
+} from "../artworks/morphogenesis.js";
+import { initFractal, drawFractal } from "../artworks/fractal.js";
+import { drawMaurerRose } from "../artworks/rose.js";
+import { initDupin, drawDupin } from "../artworks/dupin.js";
 
-import { setReducedMotion, prefersReducedMotion, reducedMotionQuery } from './state.js';
-import { initScrollEngine } from './scroll-engine.js';
-import { initNav, setActiveNav, setReachedDots, getNavProgressFromScroll, refreshNavAnimation } from './nav-controller.js';
-import { updateCaption } from './caption-fx.js';
+import {
+  setReducedMotion,
+  prefersReducedMotion,
+  reducedMotionQuery,
+  getInitialSectionIdFromHash,
+  syncSectionHash,
+} from "./state.js";
+import { initScrollEngine } from "./scroll-engine.js";
+import {
+  initNav,
+  setActiveNav,
+  setReachedDots,
+  getNavProgressFromScroll,
+  refreshNavAnimation,
+} from "./nav-controller.js";
+import { updateCaption } from "./caption-fx.js";
 
-import { buildControls as buildResonatorControls, onSectionChange as resonatorOnSectionChange } from '../artworks/resonator-controls.js';
-import { buildControls as buildMorphogenesisControls } from '../artworks/morphogenesis-controls.js';
-import { buildControls as buildFractalControls } from '../artworks/fractal-controls.js';
-import { buildControls as buildRoseControls } from '../artworks/rose-controls.js';
-import { buildControls as buildDupinControls } from '../artworks/dupin-controls.js';
+import {
+  buildControls as buildResonatorControls,
+  onSectionChange as resonatorOnSectionChange,
+} from "../artworks/resonator-controls.js";
+import { buildControls as buildMorphogenesisControls } from "../artworks/morphogenesis-controls.js";
+import { buildControls as buildFractalControls } from "../artworks/fractal-controls.js";
+import { buildControls as buildRoseControls } from "../artworks/rose-controls.js";
+import { buildControls as buildDupinControls } from "../artworks/dupin-controls.js";
 
 let mode = 0;
 let activeMode = 0;
@@ -25,7 +44,7 @@ const MOTION = {
   medium: prefersReducedMotion() ? 0.2 : 0.65,
   slow: prefersReducedMotion() ? 0.25 : 1.05,
   easeOut: "power2.out",
-  easeInOut: "power2.inOut"
+  easeInOut: "power2.inOut",
 };
 
 function changeMode(newMode) {
@@ -39,11 +58,17 @@ function changeMode(newMode) {
   } else if (mode === 2) {
     background(8);
     initMorphogenesis();
-    updateCaption("2. Morphogenesis.", "<b>Interact:</b> Move mouse to rotate. Click or press P to cycle palette.");
+    updateCaption(
+      "2. Morphogenesis.",
+      "<b>Interact:</b> Move mouse to rotate. Click or press P to cycle palette.",
+    );
   } else if (mode === 3) {
     background(0);
     initFractal();
-    updateCaption("3. Fractal.", "<b>Interact:</b> Use right-side controls for depth, rotation, hue, and gap.");
+    updateCaption(
+      "3. Fractal.",
+      "<b>Interact:</b> Use right-side controls for depth, rotation, hue, and gap.",
+    );
   } else if (mode === 4) {
     background(10);
     updateCaption("4. Rose.", "<b>Interact:</b> Move mouse X (petals) and Y (angle).");
@@ -64,18 +89,26 @@ function runModeTransitionFx() {
     value: 0,
     duration: reduced ? 0.2 : 0.55,
     ease: "power2.out",
-    onUpdate: () => { transitionPulse = _transitionProxy.value; }
+    onUpdate: () => {
+      transitionPulse = _transitionProxy.value;
+    },
   });
 
   const tl = gsap.timeline();
-  tl.fromTo("#canvas-container",
+  tl.fromTo(
+    "#canvas-container",
     reduced
       ? { scale: 1, filter: "none" }
       : { scale: 1.08, filter: "blur(15px) saturate(1.5) contrast(1.1)", skewX: 1 },
-    { scale: 1, filter: "none", skewX: 0, duration: MOTION.slow, ease: "expo.out" }
+    { scale: 1, filter: "none", skewX: 0, duration: MOTION.slow, ease: "expo.out" },
   );
   if (glow) {
-    tl.fromTo(glow, { opacity: 0.8, scale: 1.2 }, { opacity: 0, scale: 1, duration: MOTION.medium, ease: "power2.out" }, 0);
+    tl.fromTo(
+      glow,
+      { opacity: 0.8, scale: 1.2 },
+      { opacity: 0, scale: 1, duration: MOTION.medium, ease: "power2.out" },
+      0,
+    );
   }
 }
 
@@ -91,22 +124,24 @@ function handleSectionActivate(sectionEl, _options, controlPanels) {
   }
 
   resonatorPanel?.classList.toggle("visible", id === "s1");
-  morphoPanel?.classList.toggle("visible",    id === "s2");
-  fractalPanel?.classList.toggle("visible",   id === "s3");
-  rosePanel?.classList.toggle("visible",      id === "s4");
-  dupinPanel?.classList.toggle("visible",     id === "s5");
+  morphoPanel?.classList.toggle("visible", id === "s2");
+  fractalPanel?.classList.toggle("visible", id === "s3");
+  rosePanel?.classList.toggle("visible", id === "s4");
+  dupinPanel?.classList.toggle("visible", id === "s5");
 
   if (id === "s1") resonatorOnSectionChange();
 
   setActiveNav(id);
+  syncSectionHash(id);
 }
 
 function handleIntroActivate(controlPanels) {
   const { resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel } = controlPanels;
-  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll("section").forEach((s) => s.classList.remove("active"));
   document.getElementById("intro")?.classList.add("active");
   updateCaption("", "");
   setActiveNav("");
+  syncSectionHash(null);
   resonatorPanel?.classList.remove("visible");
   morphoPanel?.classList.remove("visible");
   fractalPanel?.classList.remove("visible");
@@ -126,17 +161,17 @@ window.setup = function () {
   cnv.parent("canvas-container");
 
   const resonatorPanel = buildResonatorControls();
-  const morphoPanel    = buildMorphogenesisControls();
-  const fractalPanel   = buildFractalControls();
-  const rosePanel      = buildRoseControls();
-  const dupinPanel     = buildDupinControls();
+  const morphoPanel = buildMorphogenesisControls();
+  const fractalPanel = buildFractalControls();
+  const rosePanel = buildRoseControls();
+  const dupinPanel = buildDupinControls();
   document.body.append(resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel);
 
   const controlPanels = { resonatorPanel, morphoPanel, fractalPanel, rosePanel, dupinPanel };
-  const sections    = gsap.utils.toArray("section");
+  const sections = gsap.utils.toArray("section");
   const artSections = gsap.utils.toArray("section[data-mode]");
   const introSection = document.getElementById("intro");
-  const introTitle   = document.getElementById("intro-title");
+  const introTitle = document.getElementById("intro-title");
 
   const { scrollToSectionIndex, activateSection } = initScrollEngine({
     sections,
@@ -145,11 +180,11 @@ window.setup = function () {
     prefersReducedMotion,
     MOTION,
     onSectionActivate: (sectionEl, opts) => handleSectionActivate(sectionEl, opts, controlPanels),
-    onIntroActivate:   () => handleIntroActivate(controlPanels),
-    onScrollProgress:  (scrollY) => {
+    onIntroActivate: () => handleIntroActivate(controlPanels),
+    onScrollProgress: (scrollY) => {
       const percent = getNavProgressFromScroll(scrollY);
       setReachedDots(percent);
-    }
+    },
   });
 
   initNav({
@@ -158,7 +193,7 @@ window.setup = function () {
     navContainer: document.getElementById("progress-nav"),
     prefersReducedMotion,
     scrollToFn: scrollToSectionIndex,
-    activateFn: activateSection
+    activateFn: activateSection,
   });
 
   setActiveNav("");
@@ -166,10 +201,18 @@ window.setup = function () {
   setReducedMotion(prefersReducedMotion());
   changeMode(0);
   runModeTransitionFx();
+
+  // Deep link: if the URL already names a section (e.g. shared as "#s3"),
+  // jump straight there instead of starting at the intro.
+  const initialSectionId = getInitialSectionIdFromHash();
+  if (initialSectionId) {
+    const initialIdx = sections.findIndex((s) => s.id === initialSectionId);
+    if (initialIdx >= 0) scrollToSectionIndex(initialIdx, initialSectionId);
+  }
 };
 
 window.draw = function () {
-  if      (mode === 0) background(8);
+  if (mode === 0) background(8);
   else if (mode === 1) drawResonator();
   else if (mode === 2) drawMorphogenesis();
   else if (mode === 3) drawFractal();
@@ -187,9 +230,9 @@ function _drawTransitionOverlay() {
   const cy = height * 0.5 + (mouseY - height * 0.5) * 0.15;
   const maxRadius = Math.max(width, height) * 0.7;
   const glow = ctx.createRadialGradient(cx, cy, maxRadius * 0.08, cx, cy, maxRadius);
-  glow.addColorStop(0,    `rgba(255, 255, 255, ${0.16 * transitionPulse})`);
+  glow.addColorStop(0, `rgba(255, 255, 255, ${0.16 * transitionPulse})`);
   glow.addColorStop(0.45, `rgba(0, 220, 255, ${0.1 * transitionPulse})`);
-  glow.addColorStop(1,    "rgba(0, 0, 0, 0)");
+  glow.addColorStop(1, "rgba(0, 0, 0, 0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, width, height);
   pop();
@@ -204,20 +247,27 @@ window.windowResized = function () {
 };
 
 window.mousePressed = function (event) {
-  if (event?.target?.closest("#resonator-controls, #morphogenesis-controls, #fractal-controls, #rose-controls, #dupin-controls, .regenerate-btn")) return;
+  if (
+    event?.target?.closest(
+      "#resonator-controls, #morphogenesis-controls, #fractal-controls, #rose-controls, #dupin-controls, .regenerate-btn",
+    )
+  )
+    return;
   if (mode === 1) invertResonatorRotation();
   else if (mode === 2) cycleMorphoPalette();
 };
 
 window.keyPressed = function () {
-  if ((key === 's' || key === 'S') && mode === 1) {
-    document.getElementById('save-resonator-screenshot')?.click();
+  if ((key === "s" || key === "S") && mode === 1) {
+    document.getElementById("save-resonator-screenshot")?.click();
   }
-  if ((key === 'p' || key === 'P') && mode === 2) cycleMorphoPalette();
+  if ((key === "p" || key === "P") && mode === 2) cycleMorphoPalette();
   return true;
 };
 
-window.keyReleased = function () { return true; };
+window.keyReleased = function () {
+  return true;
+};
 
 // ── Reduced-motion live updates ──────────────────────────────────────────────
 reducedMotionQuery.addEventListener("change", (event) => {
